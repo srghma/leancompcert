@@ -585,27 +585,27 @@ theorem blkAP_spec (k R RM1 LO : Nat) (s : RegState)
     simp only [blkAP, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
       Option.getD_some, hR0, reduceIte, reduceCtorEq, Nat.reduceEqDiff, hkM,
       hRMM, hdivM, hmulM, hsubM, hnM, hLOM, hRM1M, zero_modM, two_modM,
-      modM_idem, if_true, if_false]
+      modM_idem, ite_true, ite_false]
   · show srun k s (blkAP R RM1 LO) 7 = k % R
     simp only [blkAP, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
       Option.getD_some, hR0, reduceIte, reduceCtorEq, Nat.reduceEqDiff, hkM,
       hRMM, hdivM, hmulM, hsubM, hnM, hLOM, hRM1M, zero_modM, two_modM,
-      modM_idem, if_true, if_false]
+      modM_idem, ite_true, ite_false]
   · show srun k s (blkAP R RM1 LO) 8 = LO + k / R
     simp only [blkAP, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
       Option.getD_some, hR0, reduceIte, reduceCtorEq, Nat.reduceEqDiff, hkM,
       hRMM, hdivM, hmulM, hsubM, hnM, hLOM, hRM1M, zero_modM, two_modM,
-      modM_idem, if_true, if_false]
+      modM_idem, ite_true, ite_false]
   · show srun k s (blkAP R RM1 LO) 9 = (if k % R = 0 then 1 else 0)
     simp only [blkAP, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
       Option.getD_some, hR0, reduceIte, reduceCtorEq, Nat.reduceEqDiff, hkM,
       hRMM, hdivM, hmulM, hsubM, hnM, hLOM, hRM1M, zero_modM, two_modM,
-      modM_idem, if_true, if_false]
+      modM_idem, ite_true, ite_false]
   · show srun k s (blkAP R RM1 LO) 10 = (if k % R = RM1 then 1 else 0)
     simp only [blkAP, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
       Option.getD_some, hR0, reduceIte, reduceCtorEq, Nat.reduceEqDiff, hkM,
       hRMM, hdivM, hmulM, hsubM, hnM, hLOM, hRM1M, zero_modM, two_modM,
-      modM_idem, if_true, if_false]
+      modM_idem, ite_true, ite_false]
   · intro j h6 h52 h7 h8 h9 h10
     refine srun_untouched k j (blkAP R RM1 LO) ?_ s
     intro i hi
@@ -644,8 +644,8 @@ theorem blkBP_spec (k EX EDS DS2 q : Nat) (s : RegState)
         simp only [blkBP, divOfR, srun, sdest, sval, denoteOperand, denoteOp,
           RegState.set, Option.getD_some, hEX0, reduceCtorEq, Nat.reduceEqDiff,
           h7, hqM, hEXM', hdivM, hd1M, hb1, hb0, one_add_M_modM, two_modM, modM_idem,
-          hEDSM, hDS2M, hd2M, hlt, hz, one_modM, zero_modM, reduceIte, if_true,
-          if_false, Nat.mul_zero, Nat.zero_mul, Nat.mul_one, Nat.one_mul,
+          hEDSM, hDS2M, hd2M, hlt, hz, one_modM, zero_modM, reduceIte, ite_true,
+          ite_false, Nat.mul_zero, Nat.zero_mul, Nat.mul_one, Nat.one_mul,
           Nat.add_zero, Nat.zero_add, Nat.sub_self, Nat.sub_zero]
     · have hsubq : (q + (M - EDS)) % M = q - EDS :=
         msub_general q EDS (by omega) hq
@@ -654,7 +654,7 @@ theorem blkBP_spec (k EX EDS DS2 q : Nat) (s : RegState)
           RegState.set, Option.getD_some, hEX0, reduceCtorEq, Nat.reduceEqDiff,
           h7, hqM, hEXM', hdivM, hd1M, hb1, hb0, one_add_M_modM, two_modM, modM_idem,
           hEDSM, hDS2M, hd2M, hlt, hsubq, one_modM, zero_modM, reduceIte,
-          if_true, if_false, Nat.mul_zero, Nat.zero_mul, Nat.mul_one,
+          ite_true, ite_false, Nat.mul_zero, Nat.zero_mul, Nat.mul_one,
           Nat.one_mul, Nat.add_zero, Nat.zero_add, Nat.sub_self, Nat.sub_zero]
   refine ⟨by simpa using key 14 (Or.inl rfl), by simpa using key 15 (Or.inr rfl), ?_⟩
   intro j h11 h12 h14 h52 h53 h54 h58 h13 h15
@@ -667,24 +667,24 @@ theorem blkBP_spec (k EX EDS DS2 q : Nat) (s : RegState)
 
 private theorem ite_lt_max (x L : Nat) : (if x < L then L else x) = max x L := by
   by_cases h : x < L
-  · rw [if_pos h, Nat.max_def, if_pos (Nat.le_of_lt h)]
-  · rw [if_neg h, Nat.max_def]
+  · rw [ite_eq_left h, Nat.max_def, ite_eq_left (Nat.le_of_lt h)]
+  · rw [ite_eq_right h, Nat.max_def]
     by_cases h2 : x ≤ L
-    · rw [if_pos h2]; omega
-    · rw [if_neg h2]
+    · rw [ite_eq_left h2]; omega
+    · rw [ite_eq_right h2]
 
 private theorem ite_lt_min (x L : Nat) : (if x < L then x else L) = min x L := by
   by_cases h : x < L
-  · rw [if_pos h, Nat.min_def, if_pos (Nat.le_of_lt h)]
-  · rw [if_neg h, Nat.min_def]
+  · rw [ite_eq_left h, Nat.min_def, ite_eq_left (Nat.le_of_lt h)]
+  · rw [ite_eq_right h, Nat.min_def]
     by_cases h2 : x ≤ L
-    · rw [if_pos h2]; omega
-    · rw [if_neg h2]
+    · rw [ite_eq_left h2]; omega
+    · rw [ite_eq_right h2]
 
 private theorem ite_gt_min (x L : Nat) : (if L < x then L else x) = min x L := by
   by_cases h : L < x
-  · rw [if_pos h, Nat.min_def, if_neg (by omega)]
-  · rw [if_neg h, Nat.min_def, if_pos (by omega)]
+  · rw [ite_eq_left h, Nat.min_def, ite_eq_right (by omega)]
+  · rw [ite_eq_right h, Nat.min_def, ite_eq_left (by omega)]
 
 private theorem ite_le_min (x L : Nat) : (if x ≤ L then x else L) = min x L := by
   rw [Nat.min_def]
@@ -693,8 +693,8 @@ private theorem ne_xorBit (a b : Nat) :
     (if ¬ (a = b) then (1:Nat) else 0) = xorBit a b := by
   unfold xorBit
   by_cases h : a = b
-  · rw [if_neg (not_not_intro h), if_pos h]
-  · rw [if_pos h, if_neg h]
+  · rw [ite_eq_right (not_not_intro h), ite_eq_left h]
+  · rw [ite_eq_left h, ite_eq_right h]
 
 private theorem add_M_modM (x : Nat) (hx : x < M) : (x + M) % M = x := by
   rw [Nat.add_mod_right]; exact Nat.mod_eq_of_lt hx
@@ -720,14 +720,14 @@ theorem blkC1_spec (k n r0 p0 fb : Nat) (s : RegState)
       simp only [blkC1, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
         Option.getD_some, h9, h8, h2, h3, hnM, hr0M, hp0M, hb1, one_modM,
         zero_modM, one_add_M_modM, modM_idem, reduceIte, reduceCtorEq,
-        Nat.reduceEqDiff, if_true, if_false, Nat.mul_zero, Nat.zero_mul,
+        Nat.reduceEqDiff, ite_true, ite_false, Nat.mul_zero, Nat.zero_mul,
         Nat.mul_one, Nat.one_mul, Nat.add_zero, Nat.zero_add, Nat.sub_zero]
   · rcases (by omega : fb = 0 ∨ fb = 1) with rfl | rfl <;>
       show srun k s blkC1 17 = _ <;>
       simp only [blkC1, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
         Option.getD_some, h9, h8, h2, h3, hnM, hr0M, hp0M, hb1, one_modM,
         zero_modM, one_add_M_modM, modM_idem, reduceIte, reduceCtorEq,
-        Nat.reduceEqDiff, if_true, if_false, Nat.mul_zero, Nat.zero_mul,
+        Nat.reduceEqDiff, ite_true, ite_false, Nat.mul_zero, Nat.zero_mul,
         Nat.mul_one, Nat.one_mul, Nat.add_zero, Nat.zero_add, Nat.sub_zero]
   · intro j h52 h53 h54 h16 h17
     refine srun_untouched k j blkC1 ?_ s
@@ -767,14 +767,14 @@ theorem blkC2_spec (k rin pin d : Nat) (s : RegState)
           denoteOp, RegState.set, Option.getD_some, hd0, h16, h17, h15, hrinM,
           hqdM, hmulM, hsubM, hpinM, hhit, hb1, one_modM, zero_modM,
           one_add_M_modM, modM_idem, ne_xorBit, reduceIte, reduceCtorEq,
-          Nat.reduceEqDiff, if_true, if_false, Nat.mul_zero, Nat.zero_mul,
+          Nat.reduceEqDiff, ite_true, ite_false, Nat.mul_zero, Nat.zero_mul,
           Nat.mul_one, Nat.one_mul, Nat.add_zero, Nat.zero_add, Nat.sub_zero]
     · rcases hr with rfl | rfl | rfl <;>
         simp only [blkC2, stripStep, signOf, srun, sdest, sval, denoteOperand,
           denoteOp, RegState.set, Option.getD_some, hd0, h16, h17, h15, hrinM,
           hqdM, hmulM, hsubM, hpinM, hhit, hb1, one_modM, zero_modM,
           one_add_M_modM, modM_idem, ne_xorBit, reduceIte, reduceCtorEq,
-          Nat.reduceEqDiff, if_true, if_false, Nat.mul_zero, Nat.zero_mul,
+          Nat.reduceEqDiff, ite_true, ite_false, Nat.mul_zero, Nat.zero_mul,
           Nat.mul_one, Nat.one_mul, Nat.add_zero, Nat.zero_add, Nat.sub_zero]
   refine ⟨by simpa using key 2 (Or.inl rfl), by simpa using key 3 (Or.inr (Or.inl rfl)),
     by simpa using key 24 (Or.inr (Or.inr rfl)), ?_⟩
@@ -827,14 +827,14 @@ theorem blkD1P_spec (k PL n sgn lastb a : Nat) (s : RegState)
     simp only [blkD1P, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
       Option.getD_some, hn0, h8, h24, h10, h1, hPLM, hpnM, haM', hsub1, hsub1',
       hm1, hm2, hadd, hstep, one_modM, zero_modM, modM_idem, reduceIte,
-      reduceCtorEq, Nat.reduceEqDiff, if_true, if_false]
+      reduceCtorEq, Nat.reduceEqDiff, ite_true, ite_false]
   · rcases (by omega : lastb = 0 ∨ lastb = 1) with rfl | rfl <;>
       show srun k s (blkD1P PL) 27 = _ <;>
       simp only [blkD1P, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
         Option.getD_some, hn0, h8, h24, h10, h1, hPLM, hpnM, haM', hsub1, hsub1',
         hm1, hm2, hadd, hstep, haccM, one_modM, zero_modM, one_add_M_modM,
         modM_idem, reduceIte,
-        reduceCtorEq, Nat.reduceEqDiff, if_true, if_false, Nat.mul_zero,
+        reduceCtorEq, Nat.reduceEqDiff, ite_true, ite_false, Nat.mul_zero,
         Nat.zero_mul, Nat.mul_one, Nat.one_mul, Nat.add_zero, Nat.zero_add,
         Nat.sub_zero, Nat.sub_self]
   · intro j h25 h52 h53 h54 h26 h27
@@ -858,44 +858,44 @@ theorem blkD2P_spec (k ALO AHI x : Nat) (s : RegState)
       srun k s (blkD2P ALO AHI) r = min (max x ALO) AHI := by
     intro r hr
     by_cases h1 : x < ALO
-    · have hmax : max x ALO = ALO := by rw [← ite_lt_max, if_pos h1]
+    · have hmax : max x ALO = ALO := by rw [← ite_lt_max, ite_eq_left h1]
       by_cases h2 : AHI < ALO
       · have : min (max x ALO) AHI = AHI := by
-          rw [hmax, Nat.min_def, if_neg (by omega)]
+          rw [hmax, Nat.min_def, ite_eq_right (by omega)]
         rcases hr with rfl | rfl <;>
           simp only [blkD2P, srun, sdest, sval, denoteOperand, denoteOp,
             RegState.set, Option.getD_some, h27, hALOM, hAHIM, hxM, h1, h2, hb1,
             this, one_modM, zero_modM, one_add_M_modM, modM_idem, reduceIte,
-            reduceCtorEq, Nat.reduceEqDiff, if_true, if_false, Nat.mul_zero,
+            reduceCtorEq, Nat.reduceEqDiff, ite_true, ite_false, Nat.mul_zero,
             Nat.zero_mul, Nat.mul_one, Nat.one_mul, Nat.add_zero, Nat.zero_add,
             Nat.sub_zero]
       · have : min (max x ALO) AHI = ALO := by
-          rw [hmax, Nat.min_def, if_pos (by omega)]
+          rw [hmax, Nat.min_def, ite_eq_left (by omega)]
         rcases hr with rfl | rfl <;>
           simp only [blkD2P, srun, sdest, sval, denoteOperand, denoteOp,
             RegState.set, Option.getD_some, h27, hALOM, hAHIM, hxM, h1, h2, hb1,
             this, one_modM, zero_modM, one_add_M_modM, modM_idem, reduceIte,
-            reduceCtorEq, Nat.reduceEqDiff, if_true, if_false, Nat.mul_zero,
+            reduceCtorEq, Nat.reduceEqDiff, ite_true, ite_false, Nat.mul_zero,
             Nat.zero_mul, Nat.mul_one, Nat.one_mul, Nat.add_zero, Nat.zero_add,
             Nat.sub_zero]
-    · have hmax : max x ALO = x := by rw [← ite_lt_max, if_neg h1]
+    · have hmax : max x ALO = x := by rw [← ite_lt_max, ite_eq_right h1]
       by_cases h2 : AHI < x
       · have : min (max x ALO) AHI = AHI := by
-          rw [hmax, Nat.min_def, if_neg (by omega)]
+          rw [hmax, Nat.min_def, ite_eq_right (by omega)]
         rcases hr with rfl | rfl <;>
           simp only [blkD2P, srun, sdest, sval, denoteOperand, denoteOp,
             RegState.set, Option.getD_some, h27, hALOM, hAHIM, hxM, h1, h2, hb1,
             this, one_modM, zero_modM, one_add_M_modM, modM_idem, reduceIte,
-            reduceCtorEq, Nat.reduceEqDiff, if_true, if_false, Nat.mul_zero,
+            reduceCtorEq, Nat.reduceEqDiff, ite_true, ite_false, Nat.mul_zero,
             Nat.zero_mul, Nat.mul_one, Nat.one_mul, Nat.add_zero, Nat.zero_add,
             Nat.sub_zero]
       · have : min (max x ALO) AHI = x := by
-          rw [hmax, Nat.min_def, if_pos (by omega)]
+          rw [hmax, Nat.min_def, ite_eq_left (by omega)]
         rcases hr with rfl | rfl <;>
           simp only [blkD2P, srun, sdest, sval, denoteOperand, denoteOp,
             RegState.set, Option.getD_some, h27, hALOM, hAHIM, hxM, h1, h2, hb1,
             this, one_modM, zero_modM, one_add_M_modM, modM_idem, reduceIte,
-            reduceCtorEq, Nat.reduceEqDiff, if_true, if_false, Nat.mul_zero,
+            reduceCtorEq, Nat.reduceEqDiff, ite_true, ite_false, Nat.mul_zero,
             Nat.zero_mul, Nat.mul_one, Nat.one_mul, Nat.add_zero, Nat.zero_add,
             Nat.sub_zero]
   refine ⟨by simpa using key 28 (Or.inl rfl), by simpa using key 1 (Or.inr rfl), ?_⟩
@@ -918,23 +918,23 @@ theorem blkE1P_spec (k BI x : Nat) (s : RegState)
   have hb1 : (1 + (M - 1)) % M = 0 := by rw [msub_bit 1 (by omega)]
   refine ⟨?_, ?_⟩
   · by_cases h : x < BI
-    · have hmx : max x BI = BI := by rw [← ite_lt_max, if_pos h]
-      have hmn : min x BI = x := by rw [← ite_lt_min, if_pos h]
+    · have hmx : max x BI = BI := by rw [← ite_lt_max, ite_eq_left h]
+      have hmn : min x BI = x := by rw [← ite_lt_min, ite_eq_left h]
       have hsb : (BI + (M - x)) % M = BI - x := msub_general BI x (by omega) hBI
       show srun k s (blkE1P BI) 31 = _
       simp only [blkE1P, srun, sdest, sval, denoteOperand, denoteOp,
         RegState.set, Option.getD_some, h28, hBIM, hxM, h, hb1, hmx, hmn, hsb,
         one_modM, zero_modM, one_add_M_modM, modM_idem, reduceIte, reduceCtorEq,
-        Nat.reduceEqDiff, if_true, if_false, Nat.mul_zero, Nat.zero_mul,
+        Nat.reduceEqDiff, ite_true, ite_false, Nat.mul_zero, Nat.zero_mul,
         Nat.mul_one, Nat.one_mul, Nat.add_zero, Nat.zero_add, Nat.sub_zero]
-    · have hmx : max x BI = x := by rw [← ite_lt_max, if_neg h]
-      have hmn : min x BI = BI := by rw [← ite_lt_min, if_neg h]
+    · have hmx : max x BI = x := by rw [← ite_lt_max, ite_eq_right h]
+      have hmn : min x BI = BI := by rw [← ite_lt_min, ite_eq_right h]
       have hsb : (x + (M - BI)) % M = x - BI := msub_general x BI (by omega) hx
       show srun k s (blkE1P BI) 31 = _
       simp only [blkE1P, srun, sdest, sval, denoteOperand, denoteOp,
         RegState.set, Option.getD_some, h28, hBIM, hxM, h, hb1, hmx, hmn, hsb,
         one_modM, zero_modM, one_add_M_modM, modM_idem, reduceIte, reduceCtorEq,
-        Nat.reduceEqDiff, if_true, if_false, Nat.mul_zero, Nat.zero_mul,
+        Nat.reduceEqDiff, ite_true, ite_false, Nat.mul_zero, Nat.zero_mul,
         Nat.mul_one, Nat.one_mul, Nat.add_zero, Nat.zero_add, Nat.sub_zero]
   · intro j h52 h53 h54 h55 h29 h30 h31
     refine srun_untouched k j (blkE1P BI) ?_ s
@@ -972,22 +972,22 @@ theorem blkE2P_spec (k SM SB AC ab n : Nat) (s : RegState)
     intro r hr
     by_cases hle : (SM + (ab + n)) / 2 ^ SB ≤ AC
     · have hmin : min ((SM + (ab + n)) / 2 ^ SB) AC = (SM + (ab + n)) / 2 ^ SB := by
-        rw [← ite_le_min, if_pos hle]
+        rw [← ite_le_min, ite_eq_left hle]
       rcases hr with rfl | rfl | rfl <;>
         simp only [blkE2P, srun, sdest, sval, denoteOperand, denoteOp,
           RegState.set, Option.getD_some, h31, h8, hSMM, hSBM, hACM, habn, hsmM,
           hshift, hdivM, hle, hmin, hb1, one_modM, zero_modM, one_add_M_modM,
-          modM_idem, reduceIte, reduceCtorEq, Nat.reduceEqDiff, if_true,
-          if_false, Nat.mul_zero, Nat.zero_mul, Nat.mul_one, Nat.one_mul,
+          modM_idem, reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true,
+          ite_false, Nat.mul_zero, Nat.zero_mul, Nat.mul_one, Nat.one_mul,
           Nat.add_zero, Nat.zero_add, Nat.sub_zero]
     · have hmin : min ((SM + (ab + n)) / 2 ^ SB) AC = AC := by
-        rw [← ite_le_min, if_neg hle]
+        rw [← ite_le_min, ite_eq_right hle]
       rcases hr with rfl | rfl | rfl <;>
         simp only [blkE2P, srun, sdest, sval, denoteOperand, denoteOp,
           RegState.set, Option.getD_some, h31, h8, hSMM, hSBM, hACM, habn, hsmM,
           hshift, hdivM, hle, hmin, hb1, one_modM, zero_modM, one_add_M_modM,
-          modM_idem, reduceIte, reduceCtorEq, Nat.reduceEqDiff, if_true,
-          if_false, Nat.mul_zero, Nat.zero_mul, Nat.mul_one, Nat.one_mul,
+          modM_idem, reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true,
+          ite_false, Nat.mul_zero, Nat.zero_mul, Nat.mul_one, Nat.one_mul,
           Nat.add_zero, Nat.zero_add, Nat.sub_zero]
   refine ⟨by simpa using key 33 (Or.inl rfl),
     by simpa using key 35 (Or.inr (Or.inl rfl)),
@@ -1020,22 +1020,22 @@ theorem blkF1aP_spec (k NHI e : Nat) (s : RegState)
   · by_cases hgt : NHI - e < 1 + e / 10
     · have hbw : bandWR NHI e = NHI - e := by
         show min (1 + e / 10) (NHI - e) = NHI - e
-        rw [← ite_gt_min, if_pos hgt]
+        rw [← ite_gt_min, ite_eq_left hgt]
       show srun k s (blkF1aP NHI) 38 = _
       simp only [blkF1aP, srun, sdest, sval, denoteOperand, denoteOp,
         RegState.set, Option.getD_some, hten0, h5, heM, hNHIM, hten, hdivM,
         hwrM, hremM, hremM', hgt, hbw, hb1, one_modM, zero_modM, one_add_M_modM,
-        modM_idem, reduceIte, reduceCtorEq, Nat.reduceEqDiff, if_true, if_false,
+        modM_idem, reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true, ite_false,
         Nat.mul_zero, Nat.zero_mul, Nat.mul_one, Nat.one_mul, Nat.add_zero,
         Nat.zero_add, Nat.sub_zero, Nat.sub_self]
     · have hbw : bandWR NHI e = 1 + e / 10 := by
         show min (1 + e / 10) (NHI - e) = 1 + e / 10
-        rw [← ite_gt_min, if_neg hgt]
+        rw [← ite_gt_min, ite_eq_right hgt]
       show srun k s (blkF1aP NHI) 38 = _
       simp only [blkF1aP, srun, sdest, sval, denoteOperand, denoteOp,
         RegState.set, Option.getD_some, hten0, h5, heM, hNHIM, hten, hdivM,
         hwrM, hremM, hremM', hgt, hbw, hb1, one_modM, zero_modM, one_add_M_modM,
-        modM_idem, reduceIte, reduceCtorEq, Nat.reduceEqDiff, if_true, if_false,
+        modM_idem, reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true, ite_false,
         Nat.mul_zero, Nat.zero_mul, Nat.mul_one, Nat.one_mul, Nat.add_zero,
         Nat.zero_add, Nat.sub_zero, Nat.sub_self]
   · intro j h36 h37 h52 h53 h54 h55 h38
@@ -1066,7 +1066,7 @@ theorem blkF1bP_spec (k LG e W : Nat) (s : RegState)
     simp only [blkF1bP, srun, sdest, sval, denoteOperand, denoteOp,
       RegState.set, Option.getD_some, he0, h38, h5, heM, hLGM, hlgw, hnum,
       hnum1, hq, one_modM, zero_modM, modM_idem, reduceIte, reduceCtorEq,
-      Nat.reduceEqDiff, if_true, if_false]
+      Nat.reduceEqDiff, ite_true, ite_false]
   · intro j h52 h53 h39 h40
     refine srun_untouched k j (blkF1bP LG) ?_ s
     intro i hi
@@ -1102,12 +1102,12 @@ theorem blkF2a_spec (k n e lb inc lastb : Nat) (s : RegState)
     simp only [blkF2a, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
       Option.getD_some, h8, h5, h4, h10, h40, hbitM, hadvM', hmulM, haddM, hlbM,
       one_modM, zero_modM, modM_idem, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
-      if_true, if_false]
+      ite_true, ite_false]
   · show srun k s blkF2a 43 = _
     simp only [blkF2a, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
       Option.getD_some, h8, h5, h4, h10, h40, hbitM, hadvM', hmulM, haddM, hlbM,
       one_modM, zero_modM, modM_idem, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
-      if_true, if_false]
+      ite_true, ite_false]
   · intro j h41 h42 h52 h43
     refine srun_untouched k j blkF2a ?_ s
     intro i hi
@@ -1141,21 +1141,21 @@ theorem blkF2bP_spec (k LC lr adv w e : Nat) (s : RegState)
          else if r = 5 then e + adv * w else min lr LC) := by
     intro r hr
     by_cases hle : lr ≤ LC
-    · have hmin : min lr LC = lr := by rw [← ite_le_min, if_pos hle]
+    · have hmin : min lr LC = lr := by rw [← ite_le_min, ite_eq_left hle]
       rcases hr with rfl | rfl | rfl | rfl <;>
         simp only [blkF2bP, srun, sdest, sval, denoteOperand, denoteOp,
           RegState.set, Option.getD_some, h43, h42, h38, h5, hLCM, hlrM, hwM,
           heM, hmw, hew', hle, hmin, hb1, one_modM, zero_modM, one_add_M_modM,
-          modM_idem, reduceIte, reduceCtorEq, Nat.reduceEqDiff, if_true,
-          if_false, Nat.mul_zero, Nat.zero_mul, Nat.mul_one, Nat.one_mul,
+          modM_idem, reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true,
+          ite_false, Nat.mul_zero, Nat.zero_mul, Nat.mul_one, Nat.one_mul,
           Nat.add_zero, Nat.zero_add, Nat.sub_zero, Nat.sub_self]
-    · have hmin : min lr LC = LC := by rw [← ite_le_min, if_neg hle]
+    · have hmin : min lr LC = LC := by rw [← ite_le_min, ite_eq_right hle]
       rcases hr with rfl | rfl | rfl | rfl <;>
         simp only [blkF2bP, srun, sdest, sval, denoteOperand, denoteOp,
           RegState.set, Option.getD_some, h43, h42, h38, h5, hLCM, hlrM, hwM,
           heM, hmw, hew', hle, hmin, hb1, one_modM, zero_modM, one_add_M_modM,
-          modM_idem, reduceIte, reduceCtorEq, Nat.reduceEqDiff, if_true,
-          if_false, Nat.mul_zero, Nat.zero_mul, Nat.mul_one, Nat.one_mul,
+          modM_idem, reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true,
+          ite_false, Nat.mul_zero, Nat.zero_mul, Nat.mul_one, Nat.one_mul,
           Nat.add_zero, Nat.zero_add, Nat.sub_zero, Nat.sub_self]
   refine ⟨by simpa using key 44 (Or.inl rfl),
     by simpa using key 45 (Or.inr (Or.inl rfl)),
@@ -1270,7 +1270,7 @@ theorem blkGP_spec (k NLO RC GL GH n ashC lbC gash glb accS lastb bd : Nat)
       hnM, haccM, hNLOM, hRCM, hGLM, hGHM, h1000, hacM, hlhsM, hpostM, hgokM,
       hgloM, hghiM, hgaccM, hggM, hs1, hpgM, hs2, hglM, hrvM, hs3, hviolM,
       horM, one_modM, zero_modM, modM_idem, reduceIte, reduceCtorEq,
-      Nat.reduceEqDiff, if_true, if_false]
+      Nat.reduceEqDiff, ite_true, ite_false]
   · intro j h46 h47 h48 h49 h52 h53 h50 h51 h59 h0'
     refine srun_untouched k j (blkGP NLO RC GL GH) ?_ s
     intro i hi
@@ -1285,20 +1285,20 @@ private theorem pos_add (a b : Nat) (h : 0 < a) : 0 < a + b := by omega
 theorem divOf_pos (c : Cfg) (q : Nat) : 0 < divOf c q := by
   unfold divOf divOfR
   by_cases h : q < c.ex * c.dsm
-  · rw [if_pos h]; exact pos_add 2 _ (by decide)
-  · rw [if_neg h]; exact pos_add (c.dsm + 2) _ (by omega)
+  · rw [ite_eq_left h]; exact pos_add 2 _ (by decide)
+  · rw [ite_eq_right h]; exact pos_add (c.dsm + 2) _ (by omega)
 
 theorem divOf_le (c : Cfg) (q : Nat) (hex : 0 < c.ex) (hd : c.dsm < c.dbg)
     (hq : q < c.ex * c.dsm + (c.dbg - c.dsm)) : divOf c q ≤ c.dbg + 1 := by
   unfold divOf divOfR
   by_cases h : q < c.ex * c.dsm
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     have hcomm : c.ex * c.dsm = c.dsm * c.ex := Nat.mul_comm _ _
     have h1 : q / c.ex < c.dsm := Nat.div_lt_of_lt_mul (hcomm ▸ h)
     have h2 : ∀ x : Nat, x < c.dsm → 2 + x ≤ c.dbg + 1 := by
       intro x hx; omega
     exact h2 _ h1
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     have h3 : ∀ E : Nat, ¬ (q < E) → q < E + (c.dbg - c.dsm) →
         c.dsm + 2 + (q - E) ≤ c.dbg + 1 := by
       intro E hE hq2; omega
@@ -1310,14 +1310,14 @@ theorem accClamp_ge (x : Nat) : accLo ≤ accClamp x := by
   have h1 : accLo ≤ max x accLo := by
     rw [Nat.max_def]
     by_cases h : x ≤ accLo
-    · rw [if_pos h]; exact Nat.le_refl accLo
-    · rw [if_neg h]; omega
+    · rw [ite_eq_left h]; exact Nat.le_refl accLo
+    · rw [ite_eq_right h]; omega
   have h2 : accLo ≤ accHi := by decide
   unfold accClamp
   rw [Nat.min_def]
   by_cases h : max x accLo ≤ accHi
-  · rw [if_pos h]; exact h1
-  · rw [if_neg h]; exact h2
+  · rw [ite_eq_left h]; exact h1
+  · rw [ite_eq_right h]; exact h2
 
 theorem absBias_le (x : Nat) (h1 : accLo ≤ x) (h2 : x ≤ accHi) :
     absBias x ≤ 72057594037927936 := by
@@ -1326,8 +1326,8 @@ theorem absBias_le (x : Nat) (h1 : accLo ≤ x) (h2 : x ≤ accHi) :
   unfold absBias biasV
   rw [Nat.max_def, Nat.min_def]
   by_cases h : x ≤ 4611686018427387904
-  · rw [if_pos h, if_pos h]; omega
-  · rw [if_neg h, if_neg h]; omega
+  · rw [ite_eq_left h, ite_eq_left h]; omega
+  · rw [ite_eq_right h, ite_eq_right h]; omega
 
 theorem bandWR_le (NHI e : Nat) : bandWR NHI e ≤ NHI - e := Nat.min_le_right _ _
 
@@ -1460,22 +1460,22 @@ def Inv (c : Cfg) (s : RegState) : Prop :=
 theorem xorBit_le (a b : Nat) : xorBit a b ≤ 1 := by
   unfold xorBit
   by_cases h : a = b
-  · rw [if_pos h]; omega
-  · rw [if_neg h]; omega
+  · rw [ite_eq_left h]; omega
+  · rw [ite_eq_right h]; omega
 
 theorem stripStep_par_le (d : Nat) (rp : Nat × Nat) : (stripStep d rp).2 ≤ 1 := by
   show (if rp.1 - rp.1 / d * d = 0 then ((rp.1 / d : Nat), xorBit rp.2 1)
       else (rp.1, xorBit rp.2 0)).2 ≤ 1
   by_cases h : rp.1 - rp.1 / d * d = 0
-  · rw [if_pos h]; exact xorBit_le _ _
-  · rw [if_neg h]; exact xorBit_le _ _
+  · rw [ite_eq_left h]; exact xorBit_le _ _
+  · rw [ite_eq_right h]; exact xorBit_le _ _
 
 theorem stripStep_res_le (d : Nat) (rp : Nat × Nat) : (stripStep d rp).1 ≤ rp.1 := by
   show (if rp.1 - rp.1 / d * d = 0 then ((rp.1 / d : Nat), xorBit rp.2 1)
       else (rp.1, xorBit rp.2 0)).1 ≤ rp.1
   by_cases h : rp.1 - rp.1 / d * d = 0
-  · rw [if_pos h]; exact Nat.div_le_self _ _
-  · rw [if_neg h]; exact Nat.le_refl _
+  · rw [ite_eq_left h]; exact Nat.div_le_self _ _
+  · rw [ite_eq_right h]; exact Nat.le_refl _
 
 theorem signOf_le (rp : Nat × Nat) : signOf rp ≤ 1 := xorBit_le _ _
 
@@ -1732,11 +1732,11 @@ theorem body_obs (c : Cfg) (idx : Nat) (s : RegState) (hOK : lOK c = true)
     (if idx % c.rounds = 0 then 0 else s 3) (divOf c (idx % c.rounds)) sC1
     hC116 hC117 hC115 hdpos
     (by by_cases h : idx % c.rounds = 0
-        · rw [if_pos h]; exact hnM
-        · rw [if_neg h]; exact hsw 2)
+        · rw [ite_eq_left h]; exact hnM
+        · rw [ite_eq_right h]; exact hsw 2)
     (by by_cases h : idx % c.rounds = 0
-        · rw [if_pos h]; omega
-        · rw [if_neg h]; exact hp3)
+        · rw [ite_eq_left h]; omega
+        · rw [ite_eq_right h]; exact hp3)
   rw [hgC2, hpairIn] at hC22 hC23 hC224
   have hC28 : sC2 8 = c.lo + idx / c.rounds := by
     rw [← hC18, ← hgC2]; exact RegFrame.srun_frame idx 8 _ (by rfl) sC1
@@ -2019,7 +2019,7 @@ theorem divReg_defined (k r : Nat) : ∀ (l : List Instr),
         (fun j hj => hshape j (by simp [hj])) _ ?_
       have hkeep : (s.set (sdest i) (sval k s i)) r = s r := by
         show (if r = sdest i then sval k s i else s r) = s r
-        rw [if_neg (fun h => (hdest i (by simp)) h.symm)]
+        rw [ite_eq_right (fun h => (hdest i (by simp)) h.symm)]
       rw [hkeep]
       exact hr
 
@@ -2278,21 +2278,21 @@ theorem entry_inv (c : Cfg) (hlb0 : c.lb0 ≤ lbCap) (he0p : 0 < c.e0)
       (c.lb0 % M)) 5 (c.e0 % M)) j < M
     by_cases hj5 : j = 5
     · rw [hj5]; show (if (5:Nat) = 5 then c.e0 % M else _) < M
-      rw [if_pos rfl]; exact Nat.mod_lt _ M_pos
+      rw [ite_eq_left rfl]; exact Nat.mod_lt _ M_pos
     · show (if j = 5 then c.e0 % M else
         (RegState.set (RegState.set initialState 1 (biasV % M)) 4 (c.lb0 % M)) j) < M
-      rw [if_neg hj5]
+      rw [ite_eq_right hj5]
       by_cases hj4 : j = 4
       · rw [hj4]; show (if (4:Nat) = 4 then c.lb0 % M else _) < M
-        rw [if_pos rfl]; exact Nat.mod_lt _ M_pos
+        rw [ite_eq_left rfl]; exact Nat.mod_lt _ M_pos
       · show (if j = 4 then c.lb0 % M else
           (RegState.set initialState 1 (biasV % M)) j) < M
-        rw [if_neg hj4]
+        rw [ite_eq_right hj4]
         by_cases hj1 : j = 1
         · rw [hj1]; show (if (1:Nat) = 1 then biasV % M else _) < M
-          rw [if_pos rfl]; exact Nat.mod_lt _ M_pos
+          rw [ite_eq_left rfl]; exact Nat.mod_lt _ M_pos
         · show (if j = 1 then biasV % M else initialState j) < M
-          rw [if_neg hj1]
+          rw [ite_eq_right hj1]
           exact M_pos
   · rw [h0]; omega
   · rw [h1]; exact biasV_in.1
@@ -2485,13 +2485,13 @@ theorem gstep_round (c : Cfg) (q r : Nat) (hr : r < c.rounds) (a : Abs) :
 /-! ## One candidate's block -/
 
 private theorem min_self_left (a b : Nat) (h : a ≤ b) : min a b = a := by
-  rw [Nat.min_def, if_pos h]
+  rw [Nat.min_def, ite_eq_left h]
 
 private theorem max_self_left (a b : Nat) (h : b ≤ a) : max a b = a := by
   rw [Nat.max_def]
   by_cases hh : a ≤ b
-  · rw [if_pos hh]; omega
-  · rw [if_neg hh]
+  · rw [ite_eq_left hh]; omega
+  · rw [ite_eq_right hh]
 
 theorem accClamp_eq_self (x : Nat) (h1 : accLo ≤ x) (h2 : x ≤ accHi) :
     accClamp x = x := by
@@ -2514,28 +2514,28 @@ theorem gstepAt_ee (c : Cfg) (q n : Nat) (a : Abs) :
 theorem rpAt_zero (c : Cfg) (n : Nat) (a : Abs) :
     rpAt c 0 n a = stripPre c n 1 := by
   unfold rpAt
-  rw [if_pos rfl]
+  rw [ite_eq_left rfl]
   rfl
 
 theorem rpAt_succ (c : Cfg) (q n : Nat) (a : Abs) (hq : ¬ (q = 0))
     (hres : a.res = (stripPre c n q).1) (hpar : a.par = (stripPre c n q).2) :
     rpAt c q n a = stripPre c n (q + 1) := by
   unfold rpAt
-  rw [if_neg hq, hres, hpar]
+  rw [ite_eq_right hq, hres, hpar]
   rfl
 
 theorem accAt_last (c : Cfg) (q n : Nat) (a : Abs) (hq : lastAt c q = 1)
     (hs : rpAt c q n a = stripPre c n c.rounds) :
     accAt c q n a = accSA c n a.acc := by
   unfold accAt
-  rw [hq, if_pos rfl, hs]
+  rw [hq, ite_eq_left rfl, hs]
   rfl
 
 theorem accAt_mid (c : Cfg) (q n : Nat) (a : Abs) (hq : lastAt c q = 0) :
     accAt c q n a = a.acc := by
   unfold accAt
   rw [hq]
-  exact if_neg (by omega)
+  exact ite_eq_right (by omega)
 
 theorem advAt_last (c : Cfg) (q n : Nat) (a : Abs) (hq : lastAt c q = 1) :
     advAt c q n a = advA n a.ee := by
@@ -2615,22 +2615,22 @@ theorem block_prefix (c : Cfg) (hR : 0 < c.rounds) (qq : Nat) (a : Abs)
       by_cases h1 : (1:Nat) = c.rounds
       · have hl : lastAt c 0 = 1 := by
           unfold lastAt
-          rw [if_pos (by omega)]
+          rw [ite_eq_left (by omega)]
         have hs : rpAt c 0 (c.lo + qq) a = stripPre c (c.lo + qq) c.rounds := by
           rw [rpAt_zero, ← h1]
-        rw [gstepAt_last c 0 (c.lo + qq) a hl hs, if_pos h1, if_pos h1, if_pos h1,
-          if_pos h1, ← h1]
+        rw [gstepAt_last c 0 (c.lo + qq) a hl hs, ite_eq_left h1, ite_eq_left h1, ite_eq_left h1,
+          ite_eq_left h1, ← h1]
       · have hl : lastAt c 0 = 0 := by
           unfold lastAt
-          rw [if_neg (by omega)]
-        rw [gstepAt_mid c 0 (c.lo + qq) a hl haclo hachi hlb, if_neg h1, if_neg h1,
-          if_neg h1, if_neg h1, rpAt_zero]
+          rw [ite_eq_right (by omega)]
+        rw [gstepAt_mid c 0 (c.lo + qq) a hl haclo hachi hlb, ite_eq_right h1, ite_eq_right h1,
+          ite_eq_right h1, ite_eq_right h1, rpAt_zero]
   | succ k ih =>
       intro hk
       have hklt : k < c.rounds := by omega
       have hkne : ¬ (k + 1 = c.rounds) := by omega
       rw [List.range_succ, List.foldl_append, List.foldl_cons, List.foldl_nil,
-        ih hklt, if_neg hkne, if_neg hkne, if_neg hkne, if_neg hkne,
+        ih hklt, ite_eq_right hkne, ite_eq_right hkne, ite_eq_right hkne, ite_eq_right hkne,
         gstep_round c qq (k + 1) hk _]
       have hrp : rpAt c (k + 1) (c.lo + qq)
           (⟨a.bad, a.acc, (stripPre c (c.lo + qq) (k + 1)).1,
@@ -2640,7 +2640,7 @@ theorem block_prefix (c : Cfg) (hR : 0 < c.rounds) (qq : Nat) (a : Abs)
       by_cases h1 : k + 1 + 1 = c.rounds
       · have hl : lastAt c (k + 1) = 1 := by
           unfold lastAt
-          rw [if_pos (by omega)]
+          rw [ite_eq_left (by omega)]
         have hs : rpAt c (k + 1) (c.lo + qq)
             (⟨a.bad, a.acc, (stripPre c (c.lo + qq) (k + 1)).1,
               (stripPre c (c.lo + qq) (k + 1)).2, a.lb, a.ee⟩ : Abs)
@@ -2649,15 +2649,15 @@ theorem block_prefix (c : Cfg) (hR : 0 < c.rounds) (qq : Nat) (a : Abs)
         rw [gstepAt_last c (k + 1) (c.lo + qq)
             (⟨a.bad, a.acc, (stripPre c (c.lo + qq) (k + 1)).1,
               (stripPre c (c.lo + qq) (k + 1)).2, a.lb, a.ee⟩ : Abs) hl hs,
-          if_pos h1, if_pos h1, if_pos h1, if_pos h1, ← h1]
+          ite_eq_left h1, ite_eq_left h1, ite_eq_left h1, ite_eq_left h1, ← h1]
       · have hl : lastAt c (k + 1) = 0 := by
           unfold lastAt
-          rw [if_neg (by omega)]
+          rw [ite_eq_right (by omega)]
         rw [gstepAt_mid c (k + 1) (c.lo + qq)
             (⟨a.bad, a.acc, (stripPre c (c.lo + qq) (k + 1)).1,
               (stripPre c (c.lo + qq) (k + 1)).2, a.lb, a.ee⟩ : Abs) hl haclo hachi
             hlb,
-          if_neg h1, if_neg h1, if_neg h1, if_neg h1, hrp]
+          ite_eq_right h1, ite_eq_right h1, ite_eq_right h1, ite_eq_right h1, hrp]
 
 /-- One block: a whole candidate's contribution. -/
 theorem block_spec (c : Cfg) (hR : 0 < c.rounds) (qq : Nat) (a : Abs)
@@ -2670,8 +2670,8 @@ theorem block_spec (c : Cfg) (hR : 0 < c.rounds) (qq : Nat) (a : Abs)
         a.ee + advA (c.lo + qq) a.ee * bandW c a.ee⟩ : Abs) := by
   have h := block_prefix c hR qq a haclo hachi hlb (c.rounds - 1) (by omega)
   rw [show c.rounds - 1 + 1 = c.rounds from by omega] at h
-  rw [if_pos (rfl : c.rounds = c.rounds), if_pos (rfl : c.rounds = c.rounds),
-    if_pos (rfl : c.rounds = c.rounds), if_pos (rfl : c.rounds = c.rounds)] at h
+  rw [ite_eq_left (rfl : c.rounds = c.rounds), ite_eq_left (rfl : c.rounds = c.rounds),
+    ite_eq_left (rfl : c.rounds = c.rounds), ite_eq_left (rfl : c.rounds = c.rounds)] at h
   rw [BlockedFold.block_eq_shift]
   show (List.range c.rounds).foldl (fun x r => gstep c (qq * c.rounds + r) x) a = _
   rw [h]
@@ -2722,7 +2722,7 @@ private theorem bit_eq_one (P : Prop) [Decidable P]
     (h : (if P then (1:Nat) else 0) = 1) : P := by
   by_cases hp : P
   · exact hp
-  · rw [if_neg hp] at h; omega
+  · rw [ite_eq_right hp] at h; omega
 
 theorem rowVerdict_le_one (g1 g2 g3 g4 g5 g6 : Nat) (h1 : g1 ≤ 1) (h2 : g2 ≤ 1)
     (h3 : g3 ≤ 1) : rowVerdict g1 g2 g3 g4 g5 g6 ≤ 1 := by
@@ -2806,7 +2806,7 @@ theorem value_eq_zero_rows (c : Cfg) (hOK : lOK c = true) (hval : value c = 0) :
   have hlble : lbRawA c (c.lo + i) (lbSeq c i) (eeSeq c i) ≤ lbCap := bit_eq_one _ g3
   refine ⟨bit_eq_one _ g1, bit_eq_one _ g2, hlble, ?_⟩
   intro hnlo
-  obtain ⟨g5, g6⟩ := g46 (by rw [if_pos hnlo])
+  obtain ⟨g5, g6⟩ := g46 (by rw [ite_eq_left hnlo])
   have hashle : ashA c (c.lo + i) (accSeq c i) ≤ ashCap := bit_eq_one _ g5
   have hprod : 1000 * (min (ashA c (c.lo + i) (accSeq c i)) ashCap *
       min (lbRawA c (c.lo + i) (lbSeq c i) (eeSeq c i)) lbCap) ≤ rhsCap :=

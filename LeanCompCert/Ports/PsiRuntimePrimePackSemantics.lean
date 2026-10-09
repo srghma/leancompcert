@@ -576,13 +576,13 @@ theorem psiRootPackCount_rank_exists (m : PsiRuntimeMeta)
   | zero => simp at hrank
   | succ k ih =>
       by_cases hselected : arr (m.markBase + psiRootPackN k) = 0
-      · rw [psiRootPackCount_succ, if_pos hselected] at hrank
+      · rw [psiRootPackCount_succ, ite_eq_left hselected] at hrank
         by_cases hbefore : rank < psiRootPackCount m arr k
         · rcases ih hbefore with ⟨q, hq, hsel, hcount⟩
           exact ⟨q, by omega, hsel, hcount⟩
         · have heq : rank = psiRootPackCount m arr k := by omega
           exact ⟨k, by omega, hselected, heq.symm⟩
-      · rw [psiRootPackCount_succ, if_neg hselected] at hrank
+      · rw [psiRootPackCount_succ, ite_eq_right hselected] at hrank
         rcases ih hrank with ⟨q, hq, hsel, hcount⟩
         exact ⟨q, by omega, hsel, hcount⟩
 

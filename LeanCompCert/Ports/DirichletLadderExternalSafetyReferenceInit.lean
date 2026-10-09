@@ -140,7 +140,7 @@ private theorem tableRange_cell
         (tblEntry_word n)]
       by_cases hev : v = n
       · subst v; simp
-      · rw [if_neg (by omega)]
+      · rw [ite_eq_right (by omega)]
         exact ih (by omega) (by omega)
 
 theorem historical_symbolicEntry_table_cell

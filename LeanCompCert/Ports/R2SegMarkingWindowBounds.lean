@@ -101,10 +101,10 @@ theorem R2MarkWindow.CellsInv.step {c : R2Cfg} {windowBase : Nat}
   · rw [R2MarkWindow.step_cells_resident hresident]
     by_cases hi : i = w.cursor.offset
     · subst i
-      simp only [updateCell, if_pos rfl]
+      simp only [updateCell, ite_eq_left rfl]
       exact (hinv w.cursor.offset).markPower w.cursor.base w.cursor.weight
         (w.cursor.first = 1) hcursor.weight_lt
-    · simp only [updateCell, if_neg hi]
+    · simp only [updateCell, ite_eq_right hi]
       exact hinv i
   · rw [R2MarkWindow.step_cells_past (Nat.le_of_not_gt hresident)]
     exact hinv i
@@ -129,12 +129,12 @@ theorem R2MarkWindow.LsumBound.step {c : R2Cfg} {windowBase : Nat}
   · rw [R2MarkWindow.step_cells_resident hresident]
     by_cases hi : i = w.cursor.offset
     · subst i
-      simp only [updateCell, if_true]
+      simp only [updateCell, ite_true]
       rw [MarkCell.markPower_lsum]
       have hcell := hbound w.cursor.offset
       have hwt := hcursor.weight_lt
       omega
-    · simp only [updateCell, if_neg hi]
+    · simp only [updateCell, ite_eq_right hi]
       exact Nat.le_trans (hbound i) (Nat.le_add_right bound (2 ^ wtBits))
   · rw [R2MarkWindow.step_cells_past (Nat.le_of_not_gt hresident)]
     exact Nat.le_trans (hbound i) (Nat.le_add_right bound (2 ^ wtBits))

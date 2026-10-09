@@ -125,10 +125,10 @@ theorem sbbcW_eq (x y c : Nat) (hx : x < M) (hy : y < M) (hc : c ≤ 1) :
     sbbcW x y c = sbbc x y c := by
   simp only [sbbcW, sbbc, wsub, wadd, wlt, M_val] at hx hy ⊢
   by_cases h : x < y + c
-  · rw [if_pos h, Prod.mk.injEq]
+  · rw [ite_eq_left h, Prod.mk.injEq]
     refine ⟨by omega, ?_⟩
     split <;> split <;> omega
-  · rw [if_neg h, Prod.mk.injEq]
+  · rw [ite_eq_right h, Prod.mk.injEq]
     refine ⟨by omega, ?_⟩
     split <;> split <;> omega
 
@@ -137,9 +137,9 @@ theorem sbbc_spec (x y c : Nat) (hx : x < M) (hy : y < M) (hc : c ≤ 1) :
       (sbbc x y c).1 < M ∧ (sbbc x y c).2 ≤ 1 := by
   simp only [sbbc, M_val] at hx hy ⊢
   by_cases h : x < y + c
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     refine ⟨by omega, by omega, by omega⟩
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     refine ⟨by omega, by omega, by omega⟩
 
 /-! ## The 128-bit product without division -/
@@ -467,7 +467,7 @@ theorem condSub2_val (n0 n1 x0 x1 : Nat)
       rw [hge, wsel_one d0.1 x0 hd0.2.1, wsel_one d1.1 x1 hd1.2.1]
       have hnot : ¬ (pval x0 x1 < pval n0 n1) := by
         simp only [pval, M_val] at *; omega
-      rw [if_neg hnot]
+      rw [ite_eq_right hnot]
       refine ⟨?_, hd0.2.1, hd1.2.1⟩
       simp only [pval, M_val] at *; omega
   | inr h =>
@@ -476,7 +476,7 @@ theorem condSub2_val (n0 n1 x0 x1 : Nat)
       rw [hge, wsel_zero d0.1 x0 hx0, wsel_zero d1.1 x1 hx1]
       have hlt : pval x0 x1 < pval n0 n1 := by
         simp only [pval, M_val] at *; omega
-      rw [if_pos hlt]
+      rw [ite_eq_left hlt]
       exact ⟨rfl, hx0, hx1⟩
 
 /-! ## Two-limb Montgomery multiplication -/
@@ -606,8 +606,8 @@ theorem dbl2_val (n0 n1 x0 x1 : Nat)
       = 2 * pval x0 x1 % pval n0 n1 := by
     rw [hcs.1, hkey]
     by_cases hlt : 2 * pval x0 x1 < pval n0 n1
-    · rw [if_pos hlt, Nat.mod_eq_of_lt hlt]
-    · rw [if_neg hlt]
+    · rw [ite_eq_left hlt, Nat.mod_eq_of_lt hlt]
+    · rw [ite_eq_right hlt]
       have hge : pval n0 n1 ≤ 2 * pval x0 x1 := Nat.not_lt.mp hlt
       rw [Nat.mod_eq_sub_mod hge, Nat.mod_eq_of_lt (by omega)]
   refine ⟨hmain, hcs.2.1, hcs.2.2, ?_⟩

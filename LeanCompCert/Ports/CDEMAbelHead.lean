@@ -1278,7 +1278,7 @@ theorem accHead_middle_run (c : Cfg) (idx : Nat) (st : AState)
       simp
     · intro j hj
       simp only [cleared, hloaded144, hloadedZero]
-      rw [if_neg hj]
+      rw [ite_eq_right hj]
   have hloaded140 : loaded 140 = 0 := by
     rw [loadedKeep 140 (by decide), hp.1]
   have hloadedK : loaded rK = st.regs rK := by
@@ -1451,7 +1451,7 @@ theorem accHead_last_run (c : Cfg) (idx : Nat) (st : AState)
       simp
     · intro j hj
       simp only [cleared, hloaded144, hloadedZero]
-      rw [if_neg hj]
+      rw [ite_eq_right hj]
   have loadedToBefore (j : Nat) (hj148 : j ≠ 148)
       (hw : RegFrame.writes j (headPreS c) = false) :
       loaded j = st.regs j := by rw [loadedKeep j hj148, preKeep j hw]

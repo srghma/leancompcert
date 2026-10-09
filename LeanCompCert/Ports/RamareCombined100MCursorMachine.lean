@@ -288,7 +288,7 @@ theorem tracedPowerScheduleRun_cell (fuel segLen w hi limit i : Nat)
         powerEventCellFold i
           (tracedPowerScheduleStep segLen w hi limit i table q).events st.cell
       by_cases hj : q.state.cursor.j < segLen
-      · simp only [tracedPowerScheduleStep, powerScheduleStep, hj, if_true,
+      · simp only [tracedPowerScheduleStep, powerScheduleStep, hj, ite_true,
           powerEventCellFold, List.foldl_append, List.foldl_cons,
           List.foldl_nil]
         change (if q.state.cursor.j = i then
@@ -300,7 +300,7 @@ theorem tracedPowerScheduleRun_cell (fuel segLen w hi limit i : Nat)
             else powerEventCellFold i q.events st.cell)
         rw [show q.state.cell = powerEventCellFold i q.events st.cell by
           simpa [q] using ih]
-      · simp only [tracedPowerScheduleStep, powerScheduleStep, hj, if_false,
+      · simp only [tracedPowerScheduleStep, powerScheduleStep, hj, ite_false,
           List.append_nil]
         simpa [q] using ih
 
@@ -361,7 +361,7 @@ theorem tracedPowerScheduleRun_live_prefix
       constructor
       · simp only [tracedPowerScheduleStep]
         rw [hprevCursor]
-        simp only [hqLive, if_true, hprevEvents, List.range_succ,
+        simp only [hqLive, ite_true, hprevEvents, List.range_succ,
           List.map_append, List.map_cons, List.map_nil]
       · change powerCursorStep segLen w hi limit table prev.state.cursor =
           { pi, pow, base, j := j + (q + 1) * pow }
@@ -600,14 +600,14 @@ theorem PowerPhaseChain.of_check (hi limit : Nat) (table : Nat → Nat)
       | cons next rest =>
           by_cases hfit : phase.pow * phase.base ≤ hi
           · simp only [powerPhaseChainCheck, Bool.and_eq_true,
-              decide_eq_true_eq, hfit, if_true] at hcheck
+              decide_eq_true_eq, hfit, ite_true] at hcheck
             rcases hcheck with ⟨hpow, ⟨hnonterminal, heq⟩, htailCheck⟩
             have htail := ih htailCheck
             subst next
             exact .bump phase.pi phase.pow phase.base rest hpow hfit
               hnonterminal htail
           · simp only [powerPhaseChainCheck, Bool.and_eq_true,
-              decide_eq_true_eq, hfit, if_false] at hcheck
+              decide_eq_true_eq, hfit, ite_false] at hcheck
             rcases hcheck with ⟨hpow, ⟨hnext, heq⟩, htailCheck⟩
             have htail := ih htailCheck
             subst next
@@ -1892,11 +1892,11 @@ theorem Cfg.markCellPrefix_cursor_past
     have ha := c.markAddressBody_live_run k s hphase hlive
       h0 h1 h2 h3 h4 h5 h6
     dsimp only at ha
-    rw [h25, ha.2.1, if_pos hlive]
+    rw [h25, ha.2.1, ite_eq_left hlive]
   · have ha := c.markAddressBody_exhausted_run k s hphase hlive
       h7 h8 h9 h10 h11 h12 h13
     dsimp only at ha
-    rw [h25, ha.2.1, if_neg hlive]
+    rw [h25, ha.2.1, ite_eq_right hlive]
 
 structure PowerCellState where
   cursor : PowerCursor
@@ -2330,7 +2330,7 @@ theorem Cfg.markCellPrefixAdvance_run
           rw [hmarkedEq]
           simpa [hsJi, hsPow, hsBase] using hrun.1
         refine ⟨?_, ?_, ?_⟩
-        · rw [if_pos ⟨hlive, heq⟩]
+        · rw [ite_eq_left ⟨hlive, heq⟩]
           exact hread
         · rw [hmarkedEq]
           exact hrun.2.trans hcur
@@ -2343,7 +2343,7 @@ theorem Cfg.markCellPrefixAdvance_run
           h0S h1S h2S h3S h4S h5S h6S
         dsimp only at hrun
         refine ⟨?_, ?_, ?_⟩
-        · rw [if_neg (fun h => heq h.2), hmarkedEq]
+        · rw [ite_eq_right (fun h => heq h.2), hmarkedEq]
           exact hrun.1
         · rw [hmarkedEq]
           exact hrun.2.trans hcur
@@ -2357,7 +2357,7 @@ theorem Cfg.markCellPrefixAdvance_run
         h7 h8 h9 h10 h11 h12 h13
       dsimp only at ha
       refine ⟨?_, ?_, ?_⟩
-      · rw [if_neg (fun h => hlive h.1), hmarkedEq]
+      · rw [ite_eq_right (fun h => hlive h.1), hmarkedEq]
         exact hrun.1
       · rw [hmarkedEq]
         exact hrun.2.trans hcur
@@ -2540,9 +2540,9 @@ theorem Cfg.body_mark_powerCell_run
   let classified := arun k active c.classBody
   have hp := c.markPhaseBody_run k s hT
   dsimp only at hp
-  have hp10 : phased.regs 10 = 1 := by rw [hp.1, if_pos hround]
+  have hp10 : phased.regs 10 = 1 := by rw [hp.1, ite_eq_left hround]
   have hp11 : phased.regs 11 = 0 := by
-    rw [hp.2.1, if_neg (by omega : ¬c.markSteps ≤ s.regs rR)]
+    rw [hp.2.1, ite_eq_right (by omega : ¬c.markSteps ≤ s.regs rR)]
   have hr10 : reset.regs 10 = 1 :=
     (arun_frame k 10 c.markResetBody (by rfl) phased).trans hp10
   have hr11 : reset.regs 11 = 0 :=
@@ -2606,9 +2606,9 @@ theorem Cfg.body_mark_table_frame
   have hp := c.markPhaseBody_run k s hT
   dsimp only at hp
   have hp10 : phased.regs 10 = 1 := by
-    rw [hp.1, if_pos hround]
+    rw [hp.1, ite_eq_left hround]
   have hp11 : phased.regs 11 = 0 := by
-    rw [hp.2.1, if_neg (by omega : ¬c.markSteps ≤ s.regs rR)]
+    rw [hp.2.1, ite_eq_right (by omega : ¬c.markSteps ≤ s.regs rR)]
   have hr10 : reset.regs 10 = 1 :=
     (arun_frame k 10 c.markResetBody (by rfl) phased).trans hp10
   have hr11 : reset.regs 11 = 0 :=
@@ -2739,7 +2739,7 @@ theorem Cfg.body_mark_counter_bounds
   have hp := c.markPhaseBody_run k s hT
   dsimp only at hp
   have hp11 : phased.regs 11 = 0 := by
-    rw [hp.2.1, if_neg (by omega : ¬c.markSteps ≤ s.regs rR)]
+    rw [hp.2.1, ite_eq_right (by omega : ¬c.markSteps ≤ s.regs rR)]
   have hr11 : reset.regs 11 = 0 :=
     (arun_frame k 11 c.markResetBody (by rfl) phased).trans hp11
   have hm11 : marked.regs 11 = 0 :=

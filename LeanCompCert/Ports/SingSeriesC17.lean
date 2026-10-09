@@ -463,7 +463,7 @@ theorem bodyA_spec (c : Cfg) (idx : Nat) (s : RegState) (hadm : Admissible c)
   have hs4M : s 4 % M = s 4 := Nat.mod_eq_of_lt (hs 4)
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
     simp only [bodyA, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff, if_true,
+      Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true,
       hidxM, hRmodM, hne, hqM, hnM, hdM, h1M, h0M, h2M, hloM, hXM, hXM2, hs2M, hs3M, hs4M,
       ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, ite_add_ite', one_sub_bit,
       ite_ite_and, ite_ite_and', ge_iff_le]
@@ -519,7 +519,7 @@ theorem bodyB_spec (idx d : Nat) (s : RegState)
     intro P inst; split <;> omega
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
     simp only [bodyB, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff, if_true,
+      Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true,
       h7, hdne, h1M, h0M, hremM, hdivM, hs2M, hselM, hsel2, hdivremM, hd1M,
       hmultM, hmulM, hd1sub, trialStep,
       ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, ite_add_ite', one_sub_bit,
@@ -602,7 +602,7 @@ theorem bodyC1_spec (c : Cfg) (idx : Nat) (s : RegState) (h : Nat)
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
     simp only [bodyC1, bodyC1a, bodyC1b, List.cons_append, List.nil_append,
       srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff, if_true,
+      Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true,
       h1M, h0M, hres1M, hres1sub, htailM, hhM, hsqM, hXXM, hscaleM, hscM, hsumM,
       hsubM, hquotM, hdivne, htermM, hRm, msub_bit _ h3,
       ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, ite_add_ite', one_sub_bit,
@@ -614,9 +614,9 @@ private theorem gate_mul (x : Nat) (hx : x ≤ 1) (P : Prop) [inst : Decidable P
     (x * (if P then (0:Nat) else 1)) % M = if P then 0 else x := by
   have hM : (2:Nat) ≤ M := by decide
   by_cases hP : P
-  · rw [if_pos hP, if_pos hP, Nat.mul_zero]
+  · rw [ite_eq_left hP, ite_eq_left hP, Nat.mul_zero]
     exact Nat.mod_eq_of_lt (by omega)
-  · rw [if_neg hP, if_neg hP, Nat.mul_one]
+  · rw [ite_eq_right hP, ite_eq_right hP, Nat.mul_one]
     exact Nat.mod_eq_of_lt (by omega)
 
 open LeanCompCert.Verified.ArrayFoldBridge in
@@ -667,7 +667,7 @@ theorem bodyC2_spec (c : Cfg) (idx : Nat) (s : RegState) (hadm : Admissible c)
     split <;> omega
   refine ⟨?_, ?_, ?_, ?_, ?_⟩ <;>
     simp only [bodyC2, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff, if_true,
+      Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true,
       h1M, h0M, hcapM, hmulM, hlowM, hX1M, htightM, hthreshM, hprodM,
       badOf, threshOf,
       ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, ite_add_ite', one_sub_bit,
@@ -709,7 +709,7 @@ theorem trialStep_prod (d : Nat) (hd : 2 ≤ d) (t : Trial) :
   show t.phi * (if t.res % d = 0 then d - 1 else 1)
       * (if t.res % d = 0 then t.res / d else t.res) ≤ t.phi * t.res
   by_cases hmod : t.res % d = 0
-  · rw [if_pos hmod, if_pos hmod]
+  · rw [ite_eq_left hmod, ite_eq_left hmod]
     have hdvd : d ∣ t.res := Nat.dvd_of_mod_eq_zero hmod
     have hcancel : d * (t.res / d) = t.res := Nat.mul_div_cancel' hdvd
     have hkey : (d - 1) * (t.res / d) ≤ t.res := by
@@ -720,7 +720,7 @@ theorem trialStep_prod (d : Nat) (hd : 2 ≤ d) (t : Trial) :
     calc t.phi * (d - 1) * (t.res / d) = t.phi * ((d - 1) * (t.res / d)) :=
           Nat.mul_assoc _ _ _
       _ ≤ t.phi * t.res := Nat.mul_le_mul_left _ hkey
-  · rw [if_neg hmod, if_neg hmod, Nat.mul_one]
+  · rw [ite_eq_right hmod, ite_eq_right hmod, Nat.mul_one]
     exact Nat.le_refl _
 
 theorem hatOf_le (t : Trial) (h : 1 ≤ t.res) : hatOf t ≤ t.phi * t.res := by
@@ -849,19 +849,19 @@ theorem divReg_defined (k r : Nat) : ∀ (l : List Instr),
         · show (denoteOp op (denoteOperand k s a) (denoteOperand k s (.reg r))).isSome = true
           have hden : denoteOperand k s (.reg r) = s r := rfl
           rcases hop with rfl | rfl <;>
-            simp only [denoteOp, hden, hr, if_false, Option.isSome_some, if_neg hr]
+            simp only [denoteOp, hden, hr, ite_false, Option.isSome_some, ite_eq_right hr]
       refine ⟨hhead, ih (fun j hj => hdest j (by simp [hj]))
         (fun j hj => hshape j (by simp [hj])) _ ?_⟩
       have hne : ¬ (r = sdest i) := fun hEq => hdest i (by simp) hEq.symm
       show ¬ ((if r = sdest i then sval k s i else s r) = 0)
-      rw [if_neg hne]
+      rw [ite_eq_right hne]
       exact hr
 
 theorem bodyA_defined (c : Cfg) (idx : Nat) (s : RegState)
     (hne : ¬ (c.rounds % M = 0)) : SAllDefined idx s (bodyA c) := by
   simp only [bodyA, SAllDefined, SDefined, sdest, sval, denoteOperand, denoteOp,
     RegState.set, Option.getD_some, Option.isSome_some, reduceIte, reduceCtorEq,
-    Nat.reduceEqDiff, if_true, hne, and_true, true_and]
+    Nat.reduceEqDiff, ite_true, hne, and_true, true_and]
 
 theorem bodyB_defined (idx : Nat) (s : RegState) (hd : ¬ (s 7 = 0)) :
     SAllDefined idx s bodyB := by
@@ -917,7 +917,7 @@ theorem bodyC1_defined (c : Cfg) (idx : Nat) (s : RegState) (h : Nat)
     omega
   have h32 : (srun idx s bodyC1a) 32 = h * h := by
     simp only [bodyC1a, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff, if_true,
+      Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true,
       h1M, h0M, hres1M, hres1sub, htailM, hhM, hsqM,
       ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, ite_add_ite',
       one_sub_bit, ite_ite_and, ite_ite_and', ge_iff_le]
@@ -1020,9 +1020,9 @@ theorem body_stages (c : Cfg) (idx : Nat) (s : RegState) (hadm : Admissible c)
   have hAprod : (stA c idx s) 4 * (stA c idx s) 2 ≤ bnd c := by
     rw [hA2, hA4]
     by_cases hq : idx % c.rounds = 0
-    · rw [if_pos hq, if_pos hq, Nat.one_mul]
+    · rw [ite_eq_left hq, ite_eq_left hq, Nat.one_mul]
       exact hXbnd'
-    · rw [if_neg hq, if_neg hq]; exact hprod
+    · rw [ite_eq_right hq, ite_eq_right hq]; exact hprod
   -- Stage B
   have hq : idx % c.rounds < c.rounds := Nat.mod_lt _ hR
   have hd2 : 2 ≤ idx % c.rounds + 2 := by omega
@@ -1131,8 +1131,8 @@ theorem stB_facts (c : Cfg) (idx : Nat) (s : RegState) (hadm : Admissible c)
   have hAprod : (stA c idx s) 4 * (stA c idx s) 2 ≤ bnd c := by
     rw [hA2, hA4]
     by_cases hq : idx % c.rounds = 0
-    · rw [if_pos hq, if_pos hq, Nat.one_mul]; exact hXbnd'
-    · rw [if_neg hq, if_neg hq]; exact hprod
+    · rw [ite_eq_left hq, ite_eq_left hq, Nat.one_mul]; exact hXbnd'
+    · rw [ite_eq_right hq, ite_eq_right hq]; exact hprod
   have hq : idx % c.rounds < c.rounds := Nat.mod_lt _ hR
   have hd2 : 2 ≤ idx % c.rounds + 2 := by omega
   have hdM : idx % c.rounds + 2 < M := by have := hadm.divLt; omega
@@ -1219,8 +1219,8 @@ theorem gstep_inv (c : Cfg) (idx : Nat) (a : Abs) (hadm : Admissible c)
     show (if idx % c.rounds = 0 then 1 else a.t.phi)
         * (if idx % c.rounds = 0 then c.lo + idx / c.rounds else a.t.res) ≤ bnd c
     by_cases hq : idx % c.rounds = 0
-    · rw [if_pos hq, if_pos hq, Nat.one_mul]; exact hXbnd'
-    · rw [if_neg hq, if_neg hq]; exact hprod
+    · rw [ite_eq_left hq, ite_eq_left hq, Nat.one_mul]; exact hXbnd'
+    · rw [ite_eq_right hq, ite_eq_right hq]; exact hprod
   have hgB : (gB c idx (gA c idx a)).t = trialStep (idx % c.rounds + 2) (gA c idx a).t := rfl
   refine ⟨?_, ?_, ?_, ?_, ?_⟩
   · show (a.bad ||| _) ≤ 1
@@ -1465,9 +1465,9 @@ theorem gstep_round (c : Cfg) (n r : Nat) (hr : r < c.rounds) (a : Abs)
   rw [gstep_qX c (n * c.rounds + r) a r (c.lo + n) hmod (by rw [hdiv])]
   by_cases hlast : r + 1 = c.rounds
   · have hq : r = c.rounds - 1 := by omega
-    simp only [if_pos hlast, if_pos hq, Nat.one_mul]
+    simp only [ite_eq_left hlast, ite_eq_left hq, Nat.one_mul]
   · have hq : ¬ (r = c.rounds - 1) := by omega
-    simp only [if_neg hlast, if_neg hq, Nat.zero_mul, Nat.add_zero,
+    simp only [ite_eq_right hlast, ite_eq_right hq, Nat.zero_mul, Nat.add_zero,
       Nat.mod_eq_of_lt hacc]
     refine Abs.eq_of ?_ rfl rfl
     show (a.bad ||| if a.acc ≤ threshOf c (c.lo + n) then 0 else 0) = a.bad
@@ -1496,11 +1496,11 @@ theorem block_prefix (c : Cfg) (hR : 0 < c.rounds) (n : Nat) (a : Abs)
       have hkne : ¬ (k + 1 = c.rounds) := by omega
       rw [List.range_succ, List.foldl_append, List.foldl_cons, List.foldl_nil,
         ih hklt]
-      simp only [if_neg hkne]
+      simp only [ite_eq_right hkne]
       rw [gstep_round c n (k + 1) hk
         ⟨a.bad, a.acc, trialPrefix (c.lo + n) (k + 1)⟩ hacc]
       have hne0 : ¬ (k + 1 = 0) := by omega
-      simp only [if_neg hne0, trialPrefix, List.range_succ, List.foldl_append,
+      simp only [ite_eq_right hne0, trialPrefix, List.range_succ, List.foldl_append,
         List.foldl_cons, List.foldl_nil]
 
 /-- **One block.**  A whole candidate's contribution. -/
@@ -1624,7 +1624,7 @@ theorem accAt_exact (c : Cfg) (hadm : Admissible c)
         unfold rowFlag at hflag
         by_cases hp : accAt c (n + 1) ≤ threshOf c (candAt c n)
         · exact hp
-        · rw [if_neg hp] at hflag; omega
+        · rw [ite_eq_right hp] at hflag; omega
       exact ⟨by rw [hexact, heq, termSum],
         Nat.le_trans hpass (threshOf_le c hadm n (by omega))⟩
 
@@ -1649,7 +1649,7 @@ theorem value_eq_zero_sound (c : Cfg) (hadm : Admissible c) (hval : value c = 0)
   unfold rowFlag at hflag
   by_cases hp : accAt c (n + 1) ≤ threshOf c (candAt c n)
   · rw [← heq]; exact hp
-  · rw [if_neg hp] at hflag; omega
+  · rw [ite_eq_right hp] at hflag; omega
 
 /-! ## Kernel sanity checks
 

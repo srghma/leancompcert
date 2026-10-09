@@ -274,7 +274,7 @@ theorem body_defined (c : Layout) (t : Nat) (s : AState)
     InstrBlock.sdest, InstrBlock.sval, denoteOperand, denoteOp,
     AState.writeReg, AState.writeArr, RegState.set, Option.getD_some,
     Option.isSome_some, rPos, rNeg, rPi, rP, rJ,
-    reduceIte, reduceCtorEq, Nat.reduceEqDiff, if_true, and_true, true_and,
+    reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true, and_true, true_and,
     htmM, hjM, hLM, hTM, h1M, h0M, h2M, hsinkM, hpbM, hKM, hppM, hppne,
     ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, one_sub_bit,
     ite_ite_and, ite_ite_and', bit_and_bit, bit_or_bit, bit_xor_one,

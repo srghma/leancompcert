@@ -480,7 +480,7 @@ theorem evenSum_add_oddSum (X : Nat) : ∀ n, evenSum X n + oddSum X n = cosSum 
     show evenSum X n + (if n % 2 = 0 then cosTerm X n else 0)
       + (oddSum X n + (if n % 2 = 0 then 0 else cosTerm X n))
       = cosSum X n + cosTerm X n
-    by_cases h : n % 2 = 0 <;> simp only [h, if_pos, if_neg, if_true, if_false] <;> omega
+    by_cases h : n % 2 = 0 <;> simp only [h, ite_eq_left, ite_eq_right, ite_true, ite_false] <;> omega
 
 theorem evenSum_le_cosSum (X : Nat) (n : Nat) : evenSum X n ≤ cosSum X n := by
   have h := evenSum_add_oddSum X n
@@ -529,7 +529,7 @@ theorem sinEvenSum_add_sinOddSum (X : Nat) : ∀ n,
     show sinEvenSum X n + (if n % 2 = 0 then sinTerm X n else 0)
       + (sinOddSum X n + (if n % 2 = 0 then 0 else sinTerm X n))
       = sinSum X n + sinTerm X n
-    by_cases h : n % 2 = 0 <;> simp only [h, if_neg, if_true, if_false] <;> omega
+    by_cases h : n % 2 = 0 <;> simp only [h, ite_eq_right, ite_true, ite_false] <;> omega
 
 #print axioms cosTerm_bracket
 #print axioms sinTerm_bracket

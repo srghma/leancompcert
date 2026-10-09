@@ -119,7 +119,7 @@ theorem auditInstr_defined (len bound idx : Nat) (s : AState)
                   auditReg, tmpReg, safeReg,
                   Nat.add_mod] at hlhs hrhs hsafe ⊢ <;>
                 first
-                | rw [if_neg (by omega)]; exact hsafe
+                | rw [ite_eq_right (by omega)]; exact hsafe
                 | exact hsafe
           | urem =>
               have hsafe := safeDivisor_ne_zero idx s hr rhs
@@ -131,7 +131,7 @@ theorem auditInstr_defined (len bound idx : Nat) (s : AState)
                   auditReg, tmpReg, safeReg,
                   Nat.add_mod] at hlhs hrhs hsafe ⊢ <;>
                 first
-                | rw [if_neg (by omega)]; exact hsafe
+                | rw [ite_eq_right (by omega)]; exact hsafe
                 | exact hsafe
           | add | sub | mul | band | bor | bxor | shl | lshr | eq | ne | lt |
               le | gt | ge =>
@@ -145,7 +145,7 @@ theorem auditInstr_defined (len bound idx : Nat) (s : AState)
           LeanCompCert.Verified.InstrBlock.sval, denoteOperand,
           denoteOp, AState.writeReg, auditReg, tmpReg, safeReg,
           Nat.mod_eq_of_lt hlenM, hidx]
-        rw [if_neg (by omega), Nat.mod_eq_of_lt hregM]
+        rw [ite_eq_right (by omega), Nat.mod_eq_of_lt hregM]
         exact hidx
       · have hzero : (0 : Nat) < len := hlen
         simp [auditInstr, AllDefined, ADefined, astep,
@@ -162,7 +162,7 @@ theorem auditInstr_defined (len bound idx : Nat) (s : AState)
           LeanCompCert.Verified.InstrBlock.sval, denoteOperand,
           denoteOp, AState.writeReg, auditReg, tmpReg, safeReg,
           Nat.mod_eq_of_lt hlenM, hidx]
-        rw [if_neg (by omega), Nat.mod_eq_of_lt hregM]
+        rw [ite_eq_right (by omega), Nat.mod_eq_of_lt hregM]
         exact hidx
       · have hzero : (0 : Nat) < len := hlen
         simp [auditInstr, AllDefined, ADefined, astep,

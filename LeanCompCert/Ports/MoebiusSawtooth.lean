@@ -248,7 +248,7 @@ theorem seedBody_arr_ge_state (n i : Nat) (hi : n ≤ i) (hn : n ≤ arrayLen)
   | succ n ih =>
       rw [seedBody_succ, arun_append, ih (by omega) (by omega)]
       rw [arun_storeLit_arr 0 n (muCode n trialRounds) i s
-        (Nat.lt_trans (by omega) (by decide : arrayLen < M)), if_neg (by omega)]
+        (Nat.lt_trans (by omega) (by decide : arrayLen < M)), ite_eq_right (by omega)]
 
 set_option maxRecDepth 1000000 in
 theorem seedBody_arr_lt_state (n i : Nat) (hi : i < n) (hn : n ≤ arrayLen)
@@ -261,7 +261,7 @@ theorem seedBody_arr_lt_state (n i : Nat) (hi : i < n) (hn : n ≤ arrayLen)
       · subst i
         rw [seedBody_arr_ge_state n n (Nat.le_refl n) (by omega)]
         rw [arun_storeLit_arr 0 n (muCode n trialRounds) n s
-          (Nat.lt_trans (by omega) (by decide : arrayLen < M)), if_pos rfl,
+          (Nat.lt_trans (by omega) (by decide : arrayLen < M)), ite_eq_left rfl,
           Nat.mod_eq_of_lt (muCode_lt_M n trialRounds)]
       · exact ih (by omega) (by omega)
           (arun 0 s (storeLit n (muCode n trialRounds)))
@@ -348,15 +348,15 @@ theorem seedBody_full_eq_entry :
   · funext j
     by_cases h28 : j = 28
     · subst j
-      simp only [entry, if_pos]
+      simp only [entry, ite_eq_left]
       exact seedBody_reg28_pos arrayLen (by decide) initialAState
     · rw [show entry.regs j = if j = 29 then muCode 0 trialRounds else 0 by
           simp [entry, h28]]
       by_cases h29 : j = 29
       · subst j
-        rw [if_pos rfl]
+        rw [ite_eq_left rfl]
         exact seedBody_reg29_pos arrayLen (by decide) initialAState
-      · rw [if_neg h29]
+      · rw [ite_eq_right h29]
         exact seedBody_reg arrayLen j h28 h29
   · funext i
     by_cases hi : i < arrayLen

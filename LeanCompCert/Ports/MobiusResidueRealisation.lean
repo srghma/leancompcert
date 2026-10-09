@@ -154,7 +154,7 @@ private theorem denoteInstr_frame {idx : Nat} {regs regs' : RegState}
   | mov d src =>
       cases h
       simp only [RegState.set, instrDest] at hj ⊢
-      exact if_neg hj
+      exact ite_eq_right hj
   | binop d op l r =>
       simp only [denoteInstr, Option.bind_eq_bind] at h
       cases hv : denoteOp op (denoteOperand idx regs l)
@@ -165,7 +165,7 @@ private theorem denoteInstr_frame {idx : Nat} {regs regs' : RegState}
           simp only [Option.bind_some, Option.pure_def, Option.some.injEq] at h
           subst h
           simp only [RegState.set, instrDest] at hj ⊢
-          exact if_neg hj
+          exact ite_eq_right hj
 
 /-- **Frame.**  A straight-line block of scalar instructions leaves every
 register outside its destination set untouched. -/

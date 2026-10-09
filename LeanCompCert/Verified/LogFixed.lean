@@ -137,9 +137,9 @@ theorem sq62_core (A Mm C : Nat) :
   by_cases hcarry :
       4611686018427387904 ≤
         Mm % 536870912 * 8589934592 + C % 4611686018427387904
-  · simp only [hcarry, if_true]
+  · simp only [hcarry, ite_true]
     omega
-  · simp only [hcarry, if_false]
+  · simp only [hcarry, ite_false]
     omega
 
 theorem sq62_eq (x : Nat) : sq62 x = x * x / B62 := by
@@ -180,9 +180,9 @@ theorem logMant_range {x : Nat} (h1 : B62 ≤ x) (h2 : x < B63) :
   intro hy1 hy2
   simp only [B62, B63] at hy1 hy2 ⊢
   by_cases h : 9223372036854775808 ≤ y
-  · simp only [h, if_true]
+  · simp only [h, ite_true]
     omega
-  · simp only [h, if_false]
+  · simp only [h, ite_false]
     omega
 
 /-- Each round truncates downward: the renormalised mantissa, scaled back by
@@ -209,9 +209,9 @@ theorem logMant_upper (x : Nat) : x * x ≤ (logMant x + 1) * 2 ^ logBit x * B62
   have hstep : sq62 x + 1 ≤ (logMant x + 1) * 2 ^ logBit x := by
     simp only [logMant, logBit, Nat.shiftRight_eq_div_pow, B63]
     by_cases h : 9223372036854775808 ≤ sq62 x
-    · simp only [h, if_true, Nat.pow_one]
+    · simp only [h, ite_true, Nat.pow_one]
       omega
-    · simp only [h, if_false, Nat.pow_zero, Nat.div_one, Nat.mul_one]
+    · simp only [h, ite_false, Nat.pow_zero, Nat.div_one, Nat.mul_one]
       omega
   calc x * x ≤ (sq62 x + 1) * B62 := hmain
     _ ≤ (logMant x + 1) * 2 ^ logBit x * B62 := Nat.mul_le_mul_right B62 hstep

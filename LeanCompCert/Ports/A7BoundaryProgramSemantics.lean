@@ -177,12 +177,12 @@ private theorem finish_flag (p : Prop) [Decidable p] (viol : Nat)
       (viol + (1 + (M - (if p then 1 else 0) % M))) % M =
         viol + (1 - (if p then 1 else 0)) := by
   by_cases hp : p
-  · simp only [if_pos hp, Nat.sub_self, Nat.add_zero]
+  · simp only [ite_eq_left hp, Nat.sub_self, Nat.add_zero]
     constructor
     · exact Nat.mod_eq_of_lt (by decide)
     · rw [show 1 + (M - 1 % M) = M by decide]
       rw [Nat.add_mod_right, Nat.mod_eq_of_lt hViol]
-  · simp only [if_neg hp, Nat.zero_mod, Nat.sub_zero]
+  · simp only [ite_eq_right hp, Nat.zero_mod, Nat.sub_zero]
     constructor
     · trivial
     · rw [show viol + (1 + M) = (viol + 1) + M by omega]

@@ -75,12 +75,12 @@ theorem auditInstr_audit_mono (k : Nat) (s : AState) (i : AInstr)
   · have hstepWord : WordState (astep k s i) := by
       change WordState (arun k s [i])
       exact arun_word k [i] s hword.1 hword.2
-    rw [auditInstr, if_pos hmul, arun_append]
+    rw [auditInstr, ite_eq_left hmul, arun_append]
     change s.regs auditReg ≤
       (arun k (astep k s i) productGuardBody).regs auditReg
     rw [← hstepFrame]
     exact productGuardBody_audit_mono k (astep k s i) hstepWord
-  · rw [auditInstr, if_neg hmul, List.append_nil]
+  · rw [auditInstr, ite_eq_right hmul, List.append_nil]
     change s.regs auditReg ≤ (astep k s i).regs auditReg
     omega
 
@@ -123,10 +123,10 @@ theorem auditInstr_sourceAgree (k : Nat) (audited source : AState)
       (astep k source i) := by
   have hstep := astep_sourceAgree (idx := k) hagree hi
   by_cases hmul : isProductMul i
-  · rw [auditInstr, if_pos hmul, arun_append]
+  · rw [auditInstr, ite_eq_left hmul, arun_append]
     exact SourceAgree.trans
       (productGuardBody_sourceAgree k (astep k audited i)) hstep
-  · simpa only [auditInstr, if_neg hmul, List.append_nil, arun] using hstep
+  · simpa only [auditInstr, ite_eq_right hmul, List.append_nil, arun] using hstep
 
 theorem auditBlock_sourceAgree (k : Nat) :
     ∀ (xs : List AInstr) (audited source : AState),
