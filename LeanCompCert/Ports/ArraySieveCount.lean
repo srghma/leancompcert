@@ -216,15 +216,15 @@ theorem body_spec (bound len t : Nat) (s : AState)
     Nat.mod_eq_of_lt hremlt
   have hvaM : s.arr (t % len) % M = s.arr (t % len) := Nat.mod_eq_of_lt hva
   refine ⟨?_, ?_, ?_⟩
-  · simp only [sieveBody, AllDefined, ADefined, arun, astep, InstrBlock.sdest,
+  · simp only [sieveBody, AllDefined, ADefined, astep, InstrBlock.sdest,
       InstrBlock.sval, denoteOperand, denoteOp, AState.writeReg, AState.writeArr,
-      RegState.set, Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
       ite_true, hlmm, hlne, htM, hnM, hqM, hbM, h2M, h1M, h0M, hdM, hddM, hremM,
       hvaM, ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, one_sub_bit,
       ite_ite_and, ite_ite_and', ge_iff_le]
     simp [hnlt]
   · simp only [sieveBody, arun, astep, InstrBlock.sdest, InstrBlock.sval,
-      denoteOperand, denoteOp, AState.writeReg, AState.writeArr, RegState.set,
+      denoteOperand, denoteOp, AState.writeReg, AState.writeArr,
       Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true,
       hlmm, hlne, htM, hnM, hqM, hbM, h2M, h1M, h0M, hdM, hddM, hremM, hvaM,
       ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, one_sub_bit,
@@ -232,7 +232,7 @@ theorem body_spec (bound len t : Nat) (s : AState)
     funext c
     simp only [gstep, obs, sel_eq]
   · simp only [sieveBody, arun, astep, InstrBlock.sdest, InstrBlock.sval,
-      denoteOperand, denoteOp, AState.writeReg, AState.writeArr, RegState.set,
+      denoteOperand, denoteOp, AState.writeReg, AState.writeArr,
       Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true,
       hlmm, hlne, htM, hnM, hqM, hbM, h2M, h1M, h0M, hdM, hddM, hremM, hvaM,
       ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, one_sub_bit,
@@ -501,7 +501,7 @@ theorem sieveBody_wf (bound len : Nat) :
   intro a ha
   simp only [sieveBody, List.mem_cons, List.not_mem_nil, or_false] at ha
   rcases ha with h|h|h|h|h|h|h|h|h|h|h|h|h|h|h|h|h|h|h|h|h|h|h <;>
-    subst h <;> simp +decide [AInstr.WF, Instr.WF, Operand.WF, regCount]
+    subst h <;> simp +decide [AInstr.WF, Instr.WF, Operand.WF]
 
 theorem sieveCountProgram_wf (bound len : Nat) :
     (sieveCountProgram bound len).WF :=

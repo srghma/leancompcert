@@ -162,7 +162,7 @@ theorem arun_lt (k : Nat) :
         | scalar instr =>
             by_cases hEq : j = InstrBlock.sdest instr
             · subst hEq
-              simp only [astep, AState.writeReg, ite_eq_left rfl]
+              simp only [astep, AState.writeReg]
               cases instr with
               | mov d src =>
                   show denoteOperand k s.regs src < M
@@ -181,7 +181,7 @@ theorem arun_lt (k : Nat) :
         | load dest idxReg =>
             by_cases hEq : j = dest
             · subst hEq
-              simp only [astep, AState.writeReg, ite_eq_left rfl]
+              simp only [astep, AState.writeReg]
               exact ha _
             · simp only [astep, AState.writeReg, ite_eq_right hEq]; exact hr j
         | store idxReg srcReg => exact hr j
@@ -192,7 +192,7 @@ theorem arun_lt (k : Nat) :
         | store idxReg srcReg =>
             by_cases hEq : j = s.regs idxReg
             · subst hEq
-              simp only [astep, AState.writeArr, ite_eq_left rfl]
+              simp only [astep, AState.writeArr]
               exact hr _
             · simp only [astep, AState.writeArr, ite_eq_right hEq]; exact ha j
 
@@ -246,7 +246,7 @@ theorem allDefined_of_alwaysDef (len k : Nat) :
                             have := h.1
                             simp only [alwaysDef, decide_eq_true_eq] at this
                             exact this
-                          simp only [denoteOperand, ite_eq_right hv])
+                          simp only [denoteOperand])
       | load _ _ => exact absurd h.1 (by simp [alwaysDef])
       | store _ _ => exact absurd h.1 (by simp [alwaysDef])
 
@@ -366,7 +366,7 @@ theorem guardG_spec (k : Nat) (s : RegState) (cap gate w sc : Nat)
           ((if 2 * cap < (s w + cap) % M then (1:Nat) else 0) * s gate) % M) % M := by
     simp only [guardG, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
       Option.getD_some, hcap, hcap2, ite_true, gt_iff_lt,
-      ite_eq_right hg, ite_eq_right (Ne.symm hg), ite_eq_right hV, ite_eq_right (Ne.symm hV)]
+      ite_eq_right (Ne.symm hg), ite_eq_right (Ne.symm hV)]
   have h1 : ((if 2 * cap < (s w + cap) % M then (1:Nat) else 0) * s gate) % M
       = (if 2 * cap < (s w + cap) % M then (1:Nat) else 0) * s gate := by
     refine Nat.mod_eq_of_lt ?_
@@ -419,8 +419,8 @@ theorem muxS_spec (k : Nat) (s : RegState) (dst gate x y sc : Nat)
   have key : srun k s (muxS dst gate x y sc) dst
       = ((s gate * s x) % M + ((1 + (M - s gate)) % M * s y) % M) % M := by
     simp only [muxS, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, one_mod_M, ite_true, ite_eq_right hd, ite_eq_right hgt, ite_eq_right hx,
-      ite_eq_right hy, ite_eq_right (Ne.symm hd), ite_eq_right (Ne.symm hgt), ite_eq_right (Ne.symm hx),
+      Option.getD_some, one_mod_M, ite_true, ite_eq_right hd,
+      ite_eq_right (Ne.symm hd), ite_eq_right (Ne.symm hgt), ite_eq_right (Ne.symm hx),
       ite_eq_right (Ne.symm hy)]
   rw [key, msub_bit hg1]
   rcases (by omega : s gate = 0 ∨ s gate = 1) with h | h <;> rw [h]
@@ -470,7 +470,7 @@ theorem smPre_spec (k : Nat) (s : RegState) (h63 w sg : Nat)
   constructor <;>
     simp only [smPre, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
       Option.getD_some, hh, zero_mod_M, tsub, ite_true, ge_iff_le,
-      ite_eq_right hsg, ite_eq_right (Ne.symm hsg), ite_eq_right hw, ite_eq_right (Ne.symm hw)]
+      ite_eq_right hsg, ite_eq_right (Ne.symm hsg), ite_eq_right hw]
 
 theorem smPre_frame (k : Nat) (s : RegState) (h63 w sg j : Nat)
     (h1 : j ≠ sg) (h2 : j ≠ 108) :
@@ -482,7 +482,7 @@ theorem smPre_frame (k : Nat) (s : RegState) (h63 w sg j : Nat)
 
 theorem smPost_spec (k : Nat) (s : RegState) (cap gate mg : Nat)
     (hc : cap % M = cap) (hs : ∀ j, s j < M)
-    (h1 : mg ≠ 110) (h2 : gate ≠ 110) :
+    (_h1 : mg ≠ 110) (h2 : gate ≠ 110) :
     srun k s (smPost cap gate mg) rViol
       = s rViol ||| ((if cap < s mg then 1 else 0) * s gate) := by
   have hM0 : 0 < M := M_pos
@@ -493,9 +493,9 @@ theorem smPost_spec (k : Nat) (s : RegState) (cap gate mg : Nat)
       = (s rViol ||| ((if cap < s mg then (1:Nat) else 0) * s gate) % M) % M := by
     simp only [smPost, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
       Option.getD_some, hc, ite_true, ite_false, gt_iff_lt,
-      ite_eq_right h1, ite_eq_right (Ne.symm h1), ite_eq_right h2, ite_eq_right (Ne.symm h2),
+      ite_eq_right h2,
       show (rViol : Nat) ≠ 110 by decide,
-      show (110 : Nat) ≠ rViol by decide]
+      ]
   have e1 : ((if cap < s mg then (1:Nat) else 0) * s gate) % M
       = (if cap < s mg then (1:Nat) else 0) * s gate := by
     refine Nat.mod_eq_of_lt ?_
@@ -655,7 +655,7 @@ theorem cmpLt_arith (a b A B C D E : Nat)
   rcases (by omega : D = 0 ∨ D = 1) with rfl | rfl <;>
   rcases (by omega : E = 0 ∨ E = 1) with rfl | rfl <;>
   simp only [Nat.mul_zero, Nat.zero_mul, Nat.mul_one, Nat.one_mul,
-    Nat.add_zero, Nat.zero_add, Nat.sub_zero, Nat.sub_self, m0, m1, m2, m3]
+    Nat.add_zero, Nat.zero_add, Nat.sub_zero, Nat.sub_self, m0, m1, m2]
 
 set_option maxHeartbeats 1000000 in
 /-- **The comparison block computes `tlt`.** -/
@@ -682,12 +682,12 @@ theorem cmpLtS_spec (k : Nat) (s : RegState) (sa la ha sb lb hb dst : Nat)
                   * (if s la < s lb then (1:Nat) else 0)) % M
                 + (if s ha < s hb then (1:Nat) else 0)) % M)) % M)) % M := by
     simp only [cmpLtS, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, one_mod_M, ite_true, ite_false, reduceIte,
-      Nat.reduceEqDiff, reduceCtorEq, ite_eq_right hdst, ite_eq_right (Ne.symm hdst),
-      a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, b1, b2, b3, b4, b5, b6,
-      b7, b8, b9, b10, b11, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, d1,
-      d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, e1, e2, e3, e4, e5, e6, e7,
-      e8, e9, e10, e11, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11]
+      Option.getD_some, one_mod_M, ite_true, ite_false,
+      Nat.reduceEqDiff, ite_eq_right hdst, ite_eq_right (Ne.symm hdst),
+      a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, b1, b2, b3, b4,
+      c1, c2, c3, d1,
+      d2, d3, d4, d5, d6, d7, d8, d9, e1, e2, e3, e4,
+      f1, f2, f3]
     rfl
   rw [key]
   simp only [tlt, bnat]
@@ -901,16 +901,14 @@ theorem mulWideG_raw (k : Nat) (s : RegState)
       (Ne.symm p16), p17, (Ne.symm p17), p18, (Ne.symm p18), p19,
       (Ne.symm p19), p20, (Ne.symm p20), p21, (Ne.symm p21), p22,
       (Ne.symm p22), p23, (Ne.symm p23), p24, (Ne.symm p24), p25,
-      (Ne.symm p25), p26, (Ne.symm p26), p27, (Ne.symm p27), q0, q1, q2,
-      q3, q4, q5, q6, q7, w0, w1, w2, w3, w4, w5, w6, w7, x0, x1, x2, x3,
+      (Ne.symm p25), p26, (Ne.symm p26), p27, (Ne.symm p27), q0,
+      w0, w1, w2, x0, x1, x2, x3,
       x4, x5, x6, x7, y0, y1, y2, y3, y4, y5, y6, y7, hlohi,
-      (Ne.symm hlohi), (Ne.symm x0), (Ne.symm x1), (Ne.symm x2),
+      (Ne.symm hlohi), (Ne.symm x0), (Ne.symm x1),
       (Ne.symm x3), (Ne.symm x4), (Ne.symm x5), (Ne.symm x6), (Ne.symm x7),
-      (Ne.symm y0), (Ne.symm y1), (Ne.symm y2), (Ne.symm y3), (Ne.symm y4),
-      (Ne.symm y5), (Ne.symm y6), (Ne.symm y7), (Ne.symm q0), (Ne.symm q1),
-      (Ne.symm q2), (Ne.symm q3), (Ne.symm q4), (Ne.symm q5), (Ne.symm q6),
-      (Ne.symm q7), (Ne.symm w0), (Ne.symm w1), (Ne.symm w2), (Ne.symm w3),
-      (Ne.symm w4), (Ne.symm w5), (Ne.symm w6), (Ne.symm w7)]
+      (Ne.symm y3),
+      (Ne.symm y6),
+      ]
 
 /-- Three nested `u64` truncations of a sum that the final value bounds. -/
 theorem mod_chain3 (x y z w : Nat) (h : x + y + z + w < M) :
@@ -992,7 +990,7 @@ theorem mwRaw_hl (a b : Nat) (ha : a < M) (hb : b < M) :
       (Nat.lt_of_le_of_lt (Nat.div_le_self _ _) (Nat.mod_lt _ M_pos))
   simp only [Verified.MulWide.hl, Verified.MulWide.B32, hB64] at hhi
   simp only [mwRaw, Verified.MulWide.hl, Verified.MulWide.B32, hB64,
-    ha0, hb0, ha1, hb1, ha0', hb0', ha1', hb1', hp00, hp01, hp10, hp11,
+    ha0, hb0, ha1', hb1', hp00, hp01, hp10, hp11,
     hshl, hshr, hmidlt, hcm, Prod.mk.injEq] at hhi ⊢
   exact ⟨trivial, mod_chain3 _ _ _ _ hhi⟩
 
@@ -1234,8 +1232,8 @@ theorem divP18S_split (lo hi : Nat) :
 /-- The preparation computes the shifted two-word value and its top digit. -/
 theorem divP18PreS_spec (k : Nat) (s : RegState) (lo hi : Nat)
     (hs : ∀ j, s j < M)
-    (hlo8 : lo ≠ 168) (hlo9 : lo ≠ 169) (hloA : lo ≠ 170)
-    (hhi8 : hi ≠ 168) (hhi9 : hi ≠ 169) (hhiA : hi ≠ 170) :
+    (_hlo8 : lo ≠ 168) (_hlo9 : lo ≠ 169) (_hloA : lo ≠ 170)
+    (hhi8 : hi ≠ 168) (hhi9 : hi ≠ 169) (_hhiA : hi ≠ 170) :
     srun k s (divP18PreS lo hi) 168 = divP18YLo (s lo) (s hi) ∧
       srun k s (divP18PreS lo hi) 169 = divP18YHi (s hi) ∧
       srun k s (divP18PreS lo hi) 170 = divP18YHi (s hi) >>> 24 := by
@@ -1249,20 +1247,17 @@ theorem divP18PreS_spec (k : Nat) (s : RegState) (lo hi : Nat)
   constructor
   · simp only [divP18PreS, divP18YLo, srun, sdest, sval, denoteOperand,
       denoteOp, RegState.set, Option.getD_some, h18, h46, h24, ite_true,
-      ite_false, Nat.reduceEqDiff, hlo8, hlo9, hloA, hhi8, hhi9, hhiA,
-      Ne.symm hlo8, Ne.symm hlo9, Ne.symm hloA, Ne.symm hhi8,
-      Ne.symm hhi9, Ne.symm hhiA, hshr (s lo) 18 (hs lo)]
+      ite_false, Nat.reduceEqDiff, hhi8, hhi9,
+      hshr (s lo) 18 (hs lo)]
   · constructor
     · simp only [divP18PreS, divP18YHi, srun, sdest, sval, denoteOperand,
         denoteOp, RegState.set, Option.getD_some, h18, h46, h24, ite_true,
-        ite_false, Nat.reduceEqDiff, hlo8, hlo9, hloA, hhi8, hhi9, hhiA,
-        Ne.symm hlo8, Ne.symm hlo9, Ne.symm hloA, Ne.symm hhi8,
-        Ne.symm hhi9, Ne.symm hhiA, hshr (s hi) 18 (hs hi)]
+        ite_false, Nat.reduceEqDiff, hhi8, hhi9,
+        hshr (s hi) 18 (hs hi)]
     · simp only [divP18PreS, divP18YHi, srun, sdest, sval, denoteOperand,
         denoteOp, RegState.set, Option.getD_some, h18, h46, h24, ite_true,
-        ite_false, Nat.reduceEqDiff, hlo8, hlo9, hloA, hhi8, hhi9, hhiA,
-        Ne.symm hlo8, Ne.symm hlo9, Ne.symm hloA, Ne.symm hhi8,
-        Ne.symm hhi9, Ne.symm hhiA, hshr (s hi) 18 (hs hi),
+        ite_false, Nat.reduceEqDiff, hhi8, hhi9,
+        hshr (s hi) 18 (hs hi),
         hshr (s hi >>> 18) 24 hhi18]
 
 theorem divP18PreS_frame (k : Nat) (s : RegState) (lo hi j : Nat)
@@ -1321,7 +1316,7 @@ theorem divP18D3PrepG_spec (k : Nat) (s : RegState) (mask : Nat)
     Nat.mod_eq_of_lt (Nat.lt_of_le_of_lt Nat.and_le_right hmlt)
   simp only [divP18D3PrepG, srun, sdest, sval, denoteOperand, denoteOp,
     RegState.set, Option.getD_some, h2, hm, hshr, hband, ite_true,
-    ite_false, Nat.reduceEqDiff]
+    ]
 
 theorem divP18D3PrepS_spec (k : Nat) (s : RegState) (h169 : s 169 < M) :
     srun k s divP18D3PrepS 173 = (s 169 >>> 2) &&& 4194303 := by
@@ -1375,7 +1370,7 @@ theorem divP18D1PrepG_spec (k : Nat) (s : RegState) (mask : Nat)
     Nat.mod_eq_of_lt (Nat.lt_of_le_of_lt Nat.and_le_right hmlt)
   simp only [divP18D1PrepG, srun, sdest, sval, denoteOperand, denoteOp,
     RegState.set, Option.getD_some, h22, hm, hshr, hband, ite_true,
-    ite_false, Nat.reduceEqDiff]
+    ]
 
 theorem divP18D1PrepS_spec (k : Nat) (s : RegState) (h168 : s 168 < M) :
     srun k s divP18D1PrepS 173 = (s 168 >>> 22) &&& 4194303 := by
@@ -1701,12 +1696,7 @@ theorem canonSignS_spec (k : Nat) (s : RegState) (sa sb lo hi dst : Nat)
   by_cases hL : s lo = 0 <;> by_cases hH : s hi = 0 <;>
   simp only [canonSignS, srun, sdest, sval, denoteOperand, denoteOp,
     RegState.set, Option.getD_some, zero_mod_M, one_mod_M, ite_true, ite_false,
-    hsa3, hsa4, hsa5, hsb3, hsb4, hsb5, hlo3, hlo4, hlo5,
-    hhi3, hhi4, hhi5, hd3, hd4, hd5, hdl, hdh,
-    Ne.symm hsa3, Ne.symm hsa4, Ne.symm hsa5,
-    Ne.symm hsb3, Ne.symm hsb4, Ne.symm hsb5,
-    Ne.symm hlo3, Ne.symm hlo4, Ne.symm hlo5,
-    Ne.symm hhi3, Ne.symm hhi4, Ne.symm hhi5,
+    hhi3, hd3, hd4, hd5,
     Ne.symm hd3, Ne.symm hd4, Ne.symm hd5,
     Ne.symm hdl, Ne.symm hdh, h, h', hL, hH, bnat, Nat.reduceEqDiff]
   all_goals decide
@@ -1894,19 +1884,17 @@ theorem cmulEncodeS_spec (k : Nat) (s : RegState) (sign neg pos dst : Nat)
   rcases (by omega : s sign = 0 ∨ s sign = 1) with h | h
   · simp only [cmulEncodeS, srun, sdest, sval, denoteOperand, denoteOp,
       RegState.set, Option.getD_some, zero_mod_M, one_mod_M, ite_true, ite_false,
-      sg8, sg9, n8, n9, p8, p9, d8, d9, hds,
-      Ne.symm sg8, Ne.symm sg9, Ne.symm n8, Ne.symm n9,
-      Ne.symm p8, Ne.symm p9, Ne.symm d8, Ne.symm d9,
-      Ne.symm hds, h, Nat.zero_mul, Nat.mul_zero, Nat.add_zero,
+      sg8, sg9, p8, p9, d8, d9,
+      Ne.symm d8,
+      Ne.symm hds, h, Nat.zero_mul, Nat.add_zero,
       Nat.zero_add, Nat.sub_zero, Nat.one_mul, Nat.reduceEqDiff, hplus, hp,
-      Nat.mod_mod]
+      ]
   · simp only [cmulEncodeS, srun, sdest, sval, denoteOperand, denoteOp,
       RegState.set, Option.getD_some, zero_mod_M, one_mod_M, ite_true, ite_false,
-      sg8, sg9, n8, n9, p8, p9, d8, d9, hds,
-      Ne.symm sg8, Ne.symm sg9, Ne.symm n8, Ne.symm n9,
-      Ne.symm p8, Ne.symm p9, Ne.symm d8, Ne.symm d9,
-      Ne.symm hds, h, Nat.zero_mul, Nat.mul_zero, Nat.add_zero,
-      Nat.zero_add, Nat.sub_self, Nat.one_mul, tsub, Nat.mod_mod,
+      sg8, sg9, p8, p9, d8, d9,
+      Ne.symm d8,
+      Ne.symm hds, h, Nat.zero_mul,
+      Nat.zero_add, Nat.one_mul, tsub, Nat.mod_mod,
       Nat.reduceEqDiff, hminus]
 
 /-- The endpoint encoder writes only its destination and `108`--`109`. -/

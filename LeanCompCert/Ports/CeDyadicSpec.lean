@@ -464,7 +464,7 @@ theorem lastTerm_preLast (c : Params) (j : Nat) (v : Vals)
     simp [c0, lastTerm, preLast, quietState, finState, q0State, sdState,
       zeroState, ceTerm, sd, denAOf, denBOf, hpk, quotientB_zero _ _ _ hC,
       Nat.mul_assoc, Nat.mul_comm, Nat.mul_left_comm]
-    simp_all [Nat.mul_assoc, Nat.mul_comm, Nat.mul_left_comm]
+    simp_all []
   · let c1 : Params := ⟨lo, len, R, k0, 1, lfx, bound⟩
     have hpk : bumpPk c1 j v = 2 ^ bumpK c1 j v := bumpPk_eq_pow c1 j v hpow
     have hC : 0 < (lo + j) * (lo + j - 1) :=
@@ -474,8 +474,8 @@ theorem lastTerm_preLast (c : Params) (j : Nat) (v : Vals)
     change lastTerm c1 (preLast c1 j v) = ceTerm c1 (lo + j) (bumpK c1 j v)
     simp [c1, lastTerm, preLast, quietState, finState, q0State, sdState,
       zeroState, ceTerm, sd, denAOf, denBOf, hpk, quotientB_one _ _ _ hC,
-      Nat.mul_assoc, Nat.mul_comm, Nat.mul_left_comm]
-    simp_all [Nat.mul_assoc, Nat.mul_comm, Nat.mul_left_comm]
+      Nat.mul_comm, Nat.mul_left_comm]
+    simp_all []
 
 /-! ## One block is one source candidate -/
 

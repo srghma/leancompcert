@@ -55,7 +55,7 @@ theorem tcVal_of_lt {x : Nat} (h : x < H) : tcVal x = (x : Int) := by
   unfold tcVal; rw [ite_eq_left h]
 
 /-- Which branch `tcVal` took, as a usable disjunction. -/
-theorem tcVal_eq (x : Nat) (hx : x < B64) :
+theorem tcVal_eq (x : Nat) (_hx : x < B64) :
     (tcVal x = (x : Int) ∧ x < H) ∨ (tcVal x = (x : Int) - (B64 : Int) ∧ H ≤ x) := by
   by_cases h : x < H
   · exact Or.inl ⟨by rw [tcVal, ite_eq_left h], h⟩

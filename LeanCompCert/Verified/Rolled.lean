@@ -420,12 +420,12 @@ theorem evalCCSequence_var_eq_lit (p : Program) (k : Nat) :
               cases hL : Proof.evalOperand env (compileOperand k lhs) with
               | none => rfl
               | some lv =>
-                  simp only [mbind_some, obind_pure]
+                  simp only [mbind_some]
                   cases hR : Proof.evalOperand env
                       (compileOperand k rhs) with
                   | none => rfl
                   | some rv =>
-                      simp only [mbind_some, obind_pure]
+                      simp only [mbind_some]
                       cases hres : Proof.evalCCBinary
                           (regLocal dest).type arith lv rv with
                       | none => rfl
@@ -526,12 +526,12 @@ theorem evalCCSequence_var_eq_lit (p : Program) (k : Nat) :
                       (compileOperand k lhs) with
                   | none => rfl
                   | some lv =>
-                      simp only [mbind_some, obind_pure]
+                      simp only [mbind_some]
                       cases hR : Proof.evalOperand env
                           (compileOperand k rhs) with
                       | none => rfl
                       | some rv =>
-                          simp only [mbind_some, obind_pure]
+                          simp only [mbind_some]
                           cases hres : Proof.evalCCComparison
                               scratchLocal.type cmp lv rv with
                           | none => rfl
@@ -565,7 +565,7 @@ theorem evalCCSequence_var_eq_lit (p : Program) (k : Nat) :
                                         value) (.local ⟨0⟩) with
                                   | none =>
                                       simp only [hRead, mbind_none,
-                                        obind_none] at hCast
+                                        ] at hCast
                                       simp at hCast
                                   | some readValue =>
                                       rw [hRead, mbind_some] at hCast
@@ -574,11 +574,11 @@ theorem evalCCSequence_var_eq_lit (p : Program) (k : Nat) :
                                           readValue with
                                       | none =>
                                           simp only [hNorm, mbind_none,
-                                            obind_none] at hCast
+                                            ] at hCast
                                           simp at hCast
                                       | some normValue =>
                                           simp only [hNorm, mbind_some,
-                                            obind_pure] at hCast
+                                            ] at hCast
                                           injection hCast with hEnvEq
                                           rw [← hEnvEq,
                                             set_preserves_counter p _ _

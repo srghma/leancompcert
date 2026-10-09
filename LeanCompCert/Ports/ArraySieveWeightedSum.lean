@@ -168,18 +168,18 @@ theorem body_spec (bound len weight bonus t : Nat) (s : AState)
     rw [hsafeM']
     split <;> omega
   refine ⟨?_, ?_, ?_⟩
-  · simp only [sieveWeightedBody, AllDefined, ADefined, arun, astep,
+  · simp only [sieveWeightedBody, AllDefined, ADefined, astep,
       InstrBlock.sdest, InstrBlock.sval, denoteOperand, denoteOp,
-      AState.writeReg, AState.writeArr, RegState.set, Option.getD_some,
+      AState.writeReg, AState.writeArr, Option.getD_some,
       reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true, hlmm, hlne, htM,
       hnM, hqM, hboundM, hweightM, hbonusM, h2M, h1M, hzeroM, hdM, hddM,
       hremM, hvaM, ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite,
       one_sub_bit, ite_ite_and, ite_ite_and', ge_iff_le]
-    simp [hnlt, hsafeM', hsafeNe']
+    simp [hnlt, hsafeM']
     omega
   · simp only [sieveWeightedBody, arun, astep, InstrBlock.sdest,
       InstrBlock.sval, denoteOperand, denoteOp, AState.writeReg,
-      AState.writeArr, RegState.set, Option.getD_some, reduceIte,
+      AState.writeArr, Option.getD_some, reduceIte,
       reduceCtorEq, Nat.reduceEqDiff, ite_true, hlmm, hlne, htM, hnM, hqM,
       hboundM, hweightM, hbonusM, h2M, h1M, hzeroM, hdM, hddM, hremM,
       hvaM, ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, one_sub_bit,
@@ -188,14 +188,14 @@ theorem body_spec (bound len weight bonus t : Nat) (s : AState)
     simp only [gstep, obs, sel_eq]
   · simp only [sieveWeightedBody, arun, astep, InstrBlock.sdest,
       InstrBlock.sval, denoteOperand, denoteOp, AState.writeReg,
-      AState.writeArr, RegState.set, Option.getD_some, reduceIte,
+      AState.writeArr, Option.getD_some, reduceIte,
       reduceCtorEq, Nat.reduceEqDiff, ite_true, hlmm, hlne, htM, hnM, hqM,
       hboundM, hweightM, hbonusM, h2M, h1M, hzeroM, hdM, hddM, hremM,
       hvaM, ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, one_sub_bit,
       ite_ite_and, ite_ite_and', ge_iff_le]
     simp only [gstep, obs, rowWeight]
     rw [hsafeM']
-    simp [hsafeNe']
+    simp []
     by_cases hn2 : 2 ≤ t % len
     · have hnne : ¬ t % len = 0 := by omega
       simp [hn2, hnne, Nat.add_mod]
@@ -558,7 +558,7 @@ theorem sieveWeightedBudgetProgram_denote
         simp only [sieveWeightedBudgetProgram, sieveWeightedProgram,
           denoteAInstrs, denoteAInstr,
           LeanCompCert.Verified.Reflect.denoteInstr, denoteOperand, denoteOp,
-          Option.bind_some, Option.map_some, Function.comp_apply]
+          ]
         simp only [Nat.mod_eq_of_lt hbudgetM]
         simp [RegState.set, obs])
   rw [hbridge]
@@ -597,7 +597,7 @@ theorem sieveWeightedBody_wf (bound len weight bonus : Nat) :
   intro a ha
   simp only [sieveWeightedBody, List.mem_cons, List.not_mem_nil, or_false] at ha
   rcases ha with h|h|h|h|h|h|h|h|h|h|h|h|h|h|h|h|h|h|h|h|h|h|h|h|h|h|h|h <;>
-    subst h <;> simp +decide [AInstr.WF, Instr.WF, Operand.WF, regCount]
+    subst h <;> simp +decide [AInstr.WF, Instr.WF, Operand.WF]
 
 theorem sieveWeightedProgram_wf (bound len weight bonus : Nat) :
     (sieveWeightedProgram bound len weight bonus).WF :=

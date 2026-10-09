@@ -178,7 +178,7 @@ theorem ppStep_p_shape' (d : Nat) (hd : 2 ≤ d) (t : PP)
 
 /-- The doubling bound: `2^k · res` never grows, so `k` stays logarithmic. -/
 theorem ppStep_pow (d : Nat) (hd : 2 ≤ d) (t : PP)
-    (hres : 1 ≤ t.res)
+    (_hres : 1 ≤ t.res)
     (hshape : t.p = 0 ∨ 2 ≤ t.p) :
     2 ^ (ppStep d t).k * (ppStep d t).res ≤ 2 ^ t.k * t.res := by
   rw [ppStep_eq d t _ rfl]
@@ -364,7 +364,7 @@ def bodyB2 : List Instr :=
   , .binop 7 .add (.reg 7) (.reg 29) ]
 
 /-- Decode the effective exponent and its guarded denominator. -/
-def bodyC1 (c : Cfg) : List Instr :=
+def bodyC1 (_c : Cfg) : List Instr :=
   [ .binop 34 .eq (.reg 6) (.lit 0)
   , .binop 35 .eq (.reg 5) (.lit 1)
   , .binop 36 .mul (.reg 35) (.reg 7)
@@ -751,7 +751,7 @@ theorem divReg_defined (k r : Nat) : ∀ (l : List Instr),
           have hden : denoteOperand k s (.reg r) = s r := rfl
           rcases hop with rfl | rfl <;>
             simp only [denoteOp, hden, hr, ite_false, Option.isSome_some,
-              ite_eq_right hr]
+              ]
       refine ⟨hhead, ih (fun j hj => hdest j (by simp [hj]))
         (fun j hj => hshape j (by simp [hj])) _ ?_⟩
       have hne : ¬ (r = sdest i) := fun hEq => hdest i (by simp) hEq.symm
@@ -810,8 +810,8 @@ theorem bodyA_spec (c : Cfg) (idx : Nat) (s : RegState) (hadm : Admissible c)
       Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true,
       hidxM, hRmodM, hne, hqM, hnM, hdM, h1M, h0M, h2M, hn0M, hXM, hXM2,
       hs5M, hs6M, hs7M,
-      ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, ite_add_ite',
-      one_sub_bit, ite_ite_and, ite_ite_and', ge_iff_le]
+      ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite,
+      one_sub_bit]
 
 /-! ## Stage B₁: record the least divisor -/
 
@@ -819,7 +819,7 @@ open LeanCompCert.Verified.ArrayFoldBridge in
 set_option maxHeartbeats 1000000 in
 /-- **Stage B₁.**  Finds the least divisor and prepares the guarded
 denominator `pd`. -/
-theorem bodyB1_spec (c : Cfg) (idx dv : Nat) (s : RegState)
+theorem bodyB1_spec (_c : Cfg) (idx dv : Nat) (s : RegState)
     (hs : ∀ j, s j < M) (h10 : s 10 = dv) (hdv2 : 2 ≤ dv) (hdvM : dv < M) :
     let s' := srun idx s bodyB1
     let P := if s 5 % dv = 0 ∧ s 6 = 0 then dv else s 6
@@ -854,8 +854,8 @@ theorem bodyB1_spec (c : Cfg) (idx dv : Nat) (s : RegState)
       RegState.set, Option.getD_some, reduceIte, reduceCtorEq,
       Nat.reduceEqDiff, ite_true, h10, h1M, h0M, hdvne, hdvMod, hremM, hs6M,
       hPM, hpdM,
-      ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, ite_add_ite',
-      one_sub_bit, ite_ite_and, ite_ite_and', ge_iff_le]
+      ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite,
+      one_sub_bit, ite_ite_and]
 
 /-! ## Stage B₂: one division by the recorded least factor -/
 
@@ -909,8 +909,8 @@ theorem bodyB2_spec (idx : Nat) (s : RegState) (Q : Prop) [Decidable Q]
       RegState.set, Option.getD_some, reduceIte, reduceCtorEq,
       Nat.reduceEqDiff, ite_true, h24, h25, h1M, h0M, hs5M, hpdne, hremM,
       hdivM, hselM, hkM,
-      ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, ite_add_ite',
-      one_sub_bit, ite_ite_and, ite_ite_and', ge_iff_le]
+      ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite,
+      one_sub_bit, ite_ite_and']
 
 /-! ## Stage C₁: decode the effective exponent -/
 
@@ -956,9 +956,9 @@ theorem bodyC1_spec (c : Cfg) (idx : Nat) (s : RegState)
     simp only [bodyC1, srun, sdest, sval, denoteOperand, denoteOp,
       RegState.set, Option.getD_some, reduceIte, reduceCtorEq,
       Nat.reduceEqDiff, ite_true, h1M, h0M, hs7M,
-      ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, ite_add_ite',
-      one_sub_bit, ite_ite_and, ite_ite_and', ge_iff_le,
-      hkEffM, hkEq, hkEffM2, hdenM, hddM]
+      ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite,
+      one_sub_bit,
+      hkEq, hkEffM2, hdenM, hddM]
 
 /-! ## Stage C₂: the two von Mangoldt increments -/
 
@@ -1019,10 +1019,10 @@ theorem bodyC2_spec (idx D : Nat) (s : RegState)
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
     simp only [bodyC2, srun, sdest, sval, denoteOperand, denoteOp,
       RegState.set, Option.getD_some, reduceIte, reduceCtorEq,
-      Nat.reduceEqDiff, ite_true, h40, h42, h44, h1M, h0M, hddne, hdiv1M,
+      Nat.reduceEqDiff, ite_true, h42, h44, h0M, hddne, hdiv1M,
       hdiv1M', hremM, hdiv2M, hceilM, hceilM',
-      ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, ite_add_ite',
-      one_sub_bit, ite_ite_and, ite_ite_and', ge_iff_le, gate_div, gate_ceil]
+      ite_mod, bit'_mul_val,
+      gate_div, gate_ceil]
 
 /-! ## Stages C₃–C₆: the word-safe ladder increments
 
@@ -1036,7 +1036,7 @@ open LeanCompCert.Verified.ArrayFoldBridge in
 set_option maxHeartbeats 1000000 in
 /-- **Stage C₃.** -/
 theorem bodyC3_spec (idx : Nat) (s : RegState) (X : Nat)
-    (hs : ∀ j, s j < M) (h11 : s 11 = X) (hX2 : 2 ≤ X) (hXB : X ≤ 2 ^ 46) :
+    (_hs : ∀ j, s j < M) (h11 : s 11 = X) (hX2 : 2 ≤ X) (hXB : X ≤ 2 ^ 46) :
     let s' := srun idx s bodyC3
     s' 0 = s 0 ∧ s' 1 = s 1 ∧ s' 2 = s 2 ∧ s' 3 = s 3 ∧ s' 4 = s 4 ∧
       s' 5 = s 5 ∧ s' 6 = s 6 ∧ s' 7 = s 7 ∧ s' 9 = s 9 ∧ s' 11 = s 11 ∧
@@ -1097,8 +1097,7 @@ theorem bodyC3_spec (idx : Nat) (s : RegState) (X : Nat)
       RegState.set, Option.getD_some, reduceIte, reduceCtorEq,
       Nat.reduceEqDiff, ite_true, h11, h1M, h2XM, h3fM, hfM, h52M, hX1sub,
       h54M, h55sub, h56M, h57sub,
-      ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, ite_add_ite',
-      one_sub_bit, ite_ite_and, ite_ite_and', ge_iff_le]
+      ]
 
 open LeanCompCert.Verified.ArrayFoldBridge in
 set_option maxHeartbeats 1000000 in
@@ -1126,13 +1125,13 @@ theorem bodyC4_spec (idx : Nat) (s : RegState) (X : Nat)
     simp only [bodyC4, srun, sdest, sval, denoteOperand, denoteOp,
       RegState.set, Option.getD_some, reduceIte, reduceCtorEq,
       Nat.reduceEqDiff, ite_true, h11, h57, hXne, hf1M, h58M, h59M,
-      ite_mod, ge_iff_le]
+      ]
 
 open LeanCompCert.Verified.ArrayFoldBridge in
 set_option maxHeartbeats 1000000 in
 /-- **Stage C₅.** -/
 theorem bodyC5_spec (idx : Nat) (s : RegState) (X : Nat)
-    (hs : ∀ j, s j < M) (hX2 : 2 ≤ X) (hXB : X ≤ 2 ^ 46)
+    (_hs : ∀ j, s j < M) (hX2 : 2 ≤ X) (hXB : X ≤ 2 ^ 46)
     (h51 : s 51 = X + X) (h52 : s 52 = X + X + 3 * fpD)
     (h58 : s 58 = (fpD - 1) / X) (h59 : s 59 = (3 * fpD + X - 1) / X) :
     let s' := srun idx s bodyC5
@@ -1180,7 +1179,7 @@ theorem bodyC5_spec (idx : Nat) (s : RegState) (X : Nat)
       RegState.set, Option.getD_some, reduceIte, reduceCtorEq,
       Nat.reduceEqDiff, ite_true, h51, h52, h58, h59, h2Xne, h60M, h61M,
       h62sub, h63M,
-      ite_mod, ge_iff_le]
+      ]
 
 /-- The lower correction stays below `fpD`. -/
 theorem corrL_le_fpD (X : Nat) (hX2 : 2 ≤ X) :
@@ -1223,7 +1222,7 @@ assembly instantiates them and folds the results into
 `incLWord X` / `incUWord X` afterwards.  (With the concrete nested-division
 expressions substituted here instead, the kernel's recursion guard trips.) -/
 theorem bodyC6_spec (idx : Nat) (s : RegState) (X CL CU : Nat)
-    (hs : ∀ j, s j < M) (hX2 : 2 ≤ X) (hXB : X ≤ 2 ^ 46)
+    (_hs : ∀ j, s j < M) (hX2 : 2 ≤ X) (hXB : X ≤ 2 ^ 46)
     (h53 : s 53 = X - 1) (h55 : s 55 = fpD + X - 1)
     (h61 : s 61 = CL) (h63 : s 63 = CU)
     (hCL : CL ≤ fpD) (hCU : CU ≤ fpD) :
@@ -1271,7 +1270,7 @@ theorem bodyC6_spec (idx : Nat) (s : RegState) (X CL CU : Nat)
       RegState.set, Option.getD_some, reduceIte, reduceCtorEq,
       Nat.reduceEqDiff, ite_true, h53, h55, h61, h63, hX1ne, hfM, h64sub,
       h66sub, h65M, h67M,
-      ite_mod, ge_iff_le]
+      ]
 
 /-! ## Stage C₇: the primed accumulators -/
 
@@ -1323,8 +1322,8 @@ theorem bodyC7_spec (c : Cfg) (idx : Nat) (s : RegState) (iL iU lL lU : Nat)
       RegState.set, Option.getD_some, reduceIte, reduceCtorEq,
       Nat.reduceEqDiff, ite_true, h46, h50, h65, h67, hRm, hiLM, hiUM, hlLM,
       hlUM,
-      ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, ite_add_ite',
-      one_sub_bit, ite_ite_and, ite_ite_and', ge_iff_le]
+      bit_mul_val,
+      ]
 
 /-! ## Stage C₈: the checks, the caps and the violation bit -/
 
@@ -1353,15 +1352,15 @@ theorem bodyC8a_spec (c : Cfg) (idx : Nat) (s : RegState)
     simp only [bodyC8a, srun, sdest, sval, denoteOperand, denoteOp,
       RegState.set, Option.getD_some, reduceIte, reduceCtorEq,
       Nat.reduceEqDiff, ite_true, h752M, h060M, h055M, hancM, h1M, h0M,
-      ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, ite_add_ite',
-      one_sub_bit, ite_ite_and, ite_ite_and', bit_or_bit, ge_iff_le]
+      ite_mod, bit_mul_val,
+      ite_ite_and, bit_or_bit]
 
 open LeanCompCert.Verified.ArrayFoldBridge in
 set_option maxHeartbeats 1000000 in
 /-- **Stage C₈b.**  Caps, the merged flag, and the violation bit. -/
 theorem bodyC8b_spec (c : Cfg) (idx : Nat) (s : RegState)
     (L P Q : Prop) [Decidable L] [Decidable P] [Decidable Q]
-    (hs : ∀ j, s j < M) (hadm : Admissible c) (h0 : s 0 ≤ 1)
+    (_hs : ∀ j, s j < M) (hadm : Admissible c) (h0 : s 0 ≤ 1)
     (h68 : s 68 = (if L then 1 else 0))
     (h80 : s 80 = (if P then 1 else 0)) (h89 : s 89 = (if Q then 1 else 0)) :
     let s' := srun idx s (bodyC8b c)
@@ -1385,8 +1384,8 @@ theorem bodyC8b_spec (c : Cfg) (idx : Nat) (s : RegState)
     simp only [bodyC8b, srun, sdest, sval, denoteOperand, denoteOp,
       RegState.set, Option.getD_some, reduceIte, reduceCtorEq,
       Nat.reduceEqDiff, ite_true, h68, h80, h89, hcapM, hor, h1M, h0M,
-      ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, ite_add_ite',
-      one_sub_bit, ite_ite_and, ite_ite_and', ite_ite_not_and, ge_iff_le]
+      ite_mod, bit_mul_val,
+      one_sub_bit, ite_ite_and, ite_ite_not_and]
 
 open LeanCompCert.Verified.ArrayFoldBridge in
 set_option maxHeartbeats 1000000 in
@@ -1396,8 +1395,8 @@ theorem bodyC9_spec (idx : Nat) (s : RegState) :
     s' 0 = s 0 ∧ s' 5 = s 5 ∧ s' 6 = s 6 ∧ s' 7 = s 7 ∧
       s' 1 = s 74 ∧ s' 2 = s 76 ∧ s' 3 = s 70 ∧ s' 4 = s 72 := by
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
-    simp only [bodyC9, srun, sdest, sval, denoteOperand, denoteOp,
-      RegState.set, Option.getD_some, reduceIte, reduceCtorEq,
+    simp only [bodyC9, srun, sdest, sval, denoteOperand,
+      RegState.set, reduceIte, reduceCtorEq,
       Nat.reduceEqDiff, ite_true]
 
 /-! ## The body, composed -/
@@ -1806,15 +1805,15 @@ theorem body_master (c : Cfg) (idx : Nat) (s : RegState) (hadm : Admissible c)
       rw [Nat.mod_eq_of_lt hadm.roundsLt]; omega
     simp only [bodyA, SAllDefined, SDefined, sdest, sval, denoteOperand,
       denoteOp, RegState.set, Option.getD_some, Option.isSome_some,
-      reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true, hne, and_true,
-      true_and]
+      reduceIte, Nat.reduceEqDiff, ite_true, hne, and_true,
+      ]
   have hdefB1 : SAllDefined idx (stA c idx s) bodyB1 := by
     refine divReg_defined idx 10 bodyB1 ?_ ?_ (stA c idx s)
       (by rw [hA10]; omega)
     · intro i hi
       simp only [bodyB1, List.mem_cons, List.not_mem_nil, or_false] at hi
       rcases hi with h|h|h|h|h|h|h|h|h|h|h|h <;> subst h <;>
-        simp +decide [sdest]
+        simp +decide []
     · intro i hi
       simp only [bodyB1, List.mem_cons, List.not_mem_nil, or_false] at hi
       rcases hi with h|h|h|h|h|h|h|h|h|h|h|h <;> subst h
@@ -1825,7 +1824,7 @@ theorem body_master (c : Cfg) (idx : Nat) (s : RegState) (hadm : Admissible c)
       (by rw [hB124]; exact pd_ne _)
     · intro i hi
       simp only [bodyB2, List.mem_cons, List.not_mem_nil, or_false] at hi
-      rcases hi with h|h|h|h|h|h|h|h|h <;> subst h <;> simp +decide [sdest]
+      rcases hi with h|h|h|h|h|h|h|h|h <;> subst h <;> simp +decide []
     · intro i hi
       simp only [bodyB2, List.mem_cons, List.not_mem_nil, or_false] at hi
       rcases hi with h|h|h|h|h|h|h|h|h <;> subst h
@@ -1844,7 +1843,7 @@ theorem body_master (c : Cfg) (idx : Nat) (s : RegState) (hadm : Admissible c)
       (by rw [hC144]; exact pd_ne _)
     · intro i hi
       simp only [bodyC2, List.mem_cons, List.not_mem_nil, or_false] at hi
-      rcases hi with h|h|h|h|h|h|h <;> subst h <;> simp +decide [sdest]
+      rcases hi with h|h|h|h|h|h|h <;> subst h <;> simp +decide []
     · intro i hi
       simp only [bodyC2, List.mem_cons, List.not_mem_nil, or_false] at hi
       rcases hi with h|h|h|h|h|h|h <;> subst h
@@ -1864,7 +1863,7 @@ theorem body_master (c : Cfg) (idx : Nat) (s : RegState) (hadm : Admissible c)
       (by rw [hC311, hC211, hC111, hB211']; omega)
     · intro i hi
       simp only [bodyC4, List.mem_cons, List.not_mem_nil, or_false] at hi
-      rcases hi with h|h <;> subst h <;> simp +decide [sdest]
+      rcases hi with h|h <;> subst h <;> simp +decide []
     · intro i hi
       simp only [bodyC4, List.mem_cons, List.not_mem_nil, or_false] at hi
       rcases hi with h|h <;> subst h
@@ -1875,7 +1874,7 @@ theorem body_master (c : Cfg) (idx : Nat) (s : RegState) (hadm : Admissible c)
       (by rw [hC451, hC351]; omega)
     · intro i hi
       simp only [bodyC5, List.mem_cons, List.not_mem_nil, or_false] at hi
-      rcases hi with h|h|h|h <;> subst h <;> simp +decide [sdest]
+      rcases hi with h|h|h|h <;> subst h <;> simp +decide []
     · intro i hi
       simp only [bodyC5, List.mem_cons, List.not_mem_nil, or_false] at hi
       rcases hi with h|h|h|h <;> subst h
@@ -1888,7 +1887,7 @@ theorem body_master (c : Cfg) (idx : Nat) (s : RegState) (hadm : Admissible c)
       (by rw [hC553, hC453, hC353]; omega)
     · intro i hi
       simp only [bodyC6, List.mem_cons, List.not_mem_nil, or_false] at hi
-      rcases hi with h|h|h|h <;> subst h <;> simp +decide [sdest]
+      rcases hi with h|h|h|h <;> subst h <;> simp +decide []
     · intro i hi
       simp only [bodyC6, List.mem_cons, List.not_mem_nil, or_false] at hi
       rcases hi with h|h|h|h <;> subst h
@@ -2038,7 +2037,7 @@ theorem entry_inv (c : Cfg) (hadm : Admissible c) : Inv c (entry c) := by
     simp [RegState.set, initialState]
   · show 1 ≤ ((((initialState.set 1 (c.logL0 % M)).set 2 (c.logU0 % M)).set 3
       (c.sumL0 % M)).set 4 (c.sumU0 % M)).set 5 (1 % M) 5
-    simp [RegState.set, initialState, h1M]
+    simp [RegState.set, h1M]
   · show ((((initialState.set 1 (c.logL0 % M)).set 2 (c.logU0 % M)).set 3
       (c.sumL0 % M)).set 4 (c.sumU0 % M)).set 5 (1 % M) 6 = 0 ∨ _
     left
@@ -2081,79 +2080,79 @@ theorem bodyA_wf (c : Cfg) : ∀ i ∈ bodyA c, i.WF regCount := by
   intro i hi
   simp only [bodyA, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h|h|h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide [Instr.WF, Operand.WF]
 
 theorem bodyB1_wf : ∀ i ∈ bodyB1, i.WF regCount := by
   intro i hi
   simp only [bodyB1, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h|h|h|h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide []
 
 theorem bodyB2_wf : ∀ i ∈ bodyB2, i.WF regCount := by
   intro i hi
   simp only [bodyB2, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide []
 
 theorem bodyC1_wf (c : Cfg) : ∀ i ∈ bodyC1 c, i.WF regCount := by
   intro i hi
   simp only [bodyC1, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h|h|h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide []
 
 theorem bodyC2_wf : ∀ i ∈ bodyC2, i.WF regCount := by
   intro i hi
   simp only [bodyC2, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide []
 
 theorem bodyC3_wf : ∀ i ∈ bodyC3, i.WF regCount := by
   intro i hi
   simp only [bodyC3, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide []
 
 theorem bodyC4_wf : ∀ i ∈ bodyC4, i.WF regCount := by
   intro i hi
   simp only [bodyC4, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide []
 
 theorem bodyC5_wf : ∀ i ∈ bodyC5, i.WF regCount := by
   intro i hi
   simp only [bodyC5, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide []
 
 theorem bodyC6_wf : ∀ i ∈ bodyC6, i.WF regCount := by
   intro i hi
   simp only [bodyC6, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide []
 
 theorem bodyC7_wf (c : Cfg) : ∀ i ∈ bodyC7 c, i.WF regCount := by
   intro i hi
   simp only [bodyC7, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide [Instr.WF, Operand.WF]
 
 theorem bodyC8a_wf (c : Cfg) : ∀ i ∈ bodyC8a c, i.WF regCount := by
   intro i hi
   simp only [bodyC8a, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h|h|h|h|h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide [Instr.WF, Operand.WF]
 
 theorem bodyC8b_wf (c : Cfg) : ∀ i ∈ bodyC8b c, i.WF regCount := by
   intro i hi
   simp only [bodyC8b, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h|h|h|h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide [Instr.WF, Operand.WF]
 
 theorem bodyC9_wf : ∀ i ∈ bodyC9, i.WF regCount := by
   intro i hi
   simp only [bodyC9, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide []
 
 theorem body_wf (c : Cfg) : ∀ i ∈ body c, i.WF regCount := by
   intro i hi
@@ -2191,7 +2190,7 @@ theorem initBlock_wf (c : Cfg) : ∀ i ∈ initBlock c, i.WF regCount := by
   intro i hi
   simp only [initBlock, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide [Instr.WF, Operand.WF]
 
 theorem mfProgram_wf (c : Cfg) : (mfProgram c).WF :=
   ⟨by show 0 < 101; omega, initBlock_wf c, body_wf c,

@@ -301,12 +301,12 @@ theorem bracket_lower_step {x x' P G Bb : Nat}
     Nat.mul_le_mul hlo hlo
   have h2 : x' * (G * G * Bb) * B62 * (B62 * B62)
       = (x' * Bb * B62) * (G * G * B62 * B62) := by
-    simp [Nat.mul_assoc, Nat.mul_comm, Nat.mul_left_comm]
+    simp [Nat.mul_comm, Nat.mul_left_comm]
   have h3 : (x * x) * (G * G * B62 * B62) = (x * G * B62) * (x * G * B62) := by
-    simp [Nat.mul_assoc, Nat.mul_comm, Nat.mul_left_comm]
+    simp [Nat.mul_comm, Nat.mul_left_comm]
   have h4 : (P * (B62 * B62)) * (P * (B62 * B62))
       = P * P * (B62 * B62) * (B62 * B62) := by
-    simp [Nat.mul_assoc, Nat.mul_comm, Nat.mul_left_comm]
+    simp [Nat.mul_comm, Nat.mul_left_comm]
   refine Nat.le_of_mul_le_mul_right ?_ (by decide : 0 < B62 * B62)
   rw [h2, ← h4]
   calc (x' * Bb * B62) * (G * G * B62 * B62)
@@ -325,16 +325,16 @@ theorem bracket_upper_step {x x' P G Bb D D' : Nat}
       ≤ (x * (B62 + D) * G) * (x * (B62 + D) * G) := Nat.mul_le_mul hhi hhi
   have h2 : (P * (B62 * B62)) * (P * (B62 * B62))
       = P * P * (B62 * B62) * (B62 * B62) := by
-    simp [Nat.mul_assoc, Nat.mul_comm, Nat.mul_left_comm]
+    simp [Nat.mul_comm, Nat.mul_left_comm]
   have h3 : (x * (B62 + D) * G) * (x * (B62 + D) * G)
       = (x * x) * (((B62 + D) * (B62 + D)) * (G * G)) := by
-    simp [Nat.mul_assoc, Nat.mul_comm, Nat.mul_left_comm]
+    simp [Nat.mul_comm, Nat.mul_left_comm]
   have h4 : ((x' + 1) * Bb * B62) * (((B62 + D) * (B62 + D)) * (G * G))
       = ((x' + 1) * ((B62 + D) * (B62 + D))) * (Bb * B62 * (G * G)) := by
     simp [Nat.mul_assoc, Nat.mul_comm, Nat.mul_left_comm]
   have h5 : (x' * ((B62 + D') * B62)) * (Bb * B62 * (G * G))
       = x' * (B62 + D') * (G * G * Bb) * (B62 * B62) := by
-    simp [Nat.mul_assoc, Nat.mul_comm, Nat.mul_left_comm]
+    simp [Nat.mul_comm, Nat.mul_left_comm]
   refine Nat.le_of_mul_le_mul_right ?_ (by decide : 0 < B62 * B62)
   rw [← h2, ← h5]
   calc (P * (B62 * B62)) * (P * (B62 * B62))
@@ -375,7 +375,7 @@ theorem logIter_spec (x0 : Nat) (h1 : B62 ≤ x0) (h2 : x0 < B63) (k : Nat)
       refine ⟨h1, h2, ?_, ?_⟩ <;>
         simp only [logIter, errB_zero, Nat.pow_zero, Nat.pow_one, Nat.mul_one,
           Nat.zero_add, Nat.add_zero, B62_eq] <;>
-        simp [Nat.mul_assoc, Nat.mul_comm, Nat.mul_left_comm]
+        simp [Nat.mul_comm, Nat.mul_left_comm]
   | succ k ih =>
       have hmono : errB k ≤ errB (k + 1) := by
         rw [errB_succ]; simp only [B62]; omega
@@ -485,7 +485,7 @@ theorem logFix_bracket (S n : Nat) (hS : errB S ≤ B62) (h1 : 1 ≤ n) (h2 : n 
       rw [← hexp]
       calc 2 ^ ((logIter (n * 2 ^ (62 - Nat.log2 n)) S).2 + 62 * 2 ^ S) * (B62 * B62)
           = B62 * 2 ^ ((logIter (n * 2 ^ (62 - Nat.log2 n)) S).2 + 62 * 2 ^ S) * B62 := by
-            simp [Nat.mul_assoc, Nat.mul_comm, Nat.mul_left_comm]
+            simp [Nat.mul_assoc, Nat.mul_comm]
         _ ≤ _ := step
     have step'' : 2 ^ (logFix S n + (62 - Nat.log2 n) * 2 ^ S)
         ≤ n ^ 2 ^ S * 2 ^ ((62 - Nat.log2 n) * 2 ^ S) :=
@@ -513,7 +513,7 @@ theorem logFix_bracket (S n : Nat) (hS : errB S ≤ B62) (h1 : 1 ≤ n) (h2 : n 
       rw [show logFix S n + 2 + (62 - Nat.log2 n) * 2 ^ S
             = 2 + (logFix S n + (62 - Nat.log2 n) * 2 ^ S) by omega]
       simp only [Nat.pow_add]
-      simp [Nat.mul_assoc, Nat.mul_comm, Nat.mul_left_comm]
+      simp [Nat.mul_assoc, Nat.mul_comm]
     rw [hfour] at step
     have step'' : n ^ 2 ^ S * 2 ^ ((62 - Nat.log2 n) * 2 ^ S)
         < 2 ^ (logFix S n + 2 + (62 - Nat.log2 n) * 2 ^ S) :=

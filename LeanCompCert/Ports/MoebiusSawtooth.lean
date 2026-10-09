@@ -198,20 +198,20 @@ theorem storeLit_defined (len k cell value : Nat) (s : AState)
     (hc : cell < len) (hcM : cell < M) :
     AllDefined len k s (storeLit cell value) := by
   simp [storeLit, AllDefined, ADefined, astep, sdest, sval,
-    denoteOperand, denoteOp, AState.writeReg, hc, Nat.mod_eq_of_lt hcM]
+    denoteOperand, AState.writeReg, hc, Nat.mod_eq_of_lt hcM]
 
 theorem arun_storeLit_arr (k cell value i : Nat) (s : AState) (hcM : cell < M) :
     (arun k s (storeLit cell value)).arr i =
       if i = cell then value % M else s.arr i := by
   simp [storeLit, arun, astep, sdest, sval,
-    denoteOperand, denoteOp, AState.writeReg, AState.writeArr,
+    denoteOperand, AState.writeReg, AState.writeArr,
     Nat.mod_eq_of_lt hcM]
 
 theorem arun_storeLit_reg (k cell value j : Nat) (s : AState)
     (h28 : j ≠ 28) (h29 : j ≠ 29) :
     (arun k s (storeLit cell value)).regs j = s.regs j := by
   simp [storeLit, arun, astep, sdest, sval,
-    denoteOperand, denoteOp, AState.writeReg, AState.writeArr, h28, h29]
+    denoteOperand, AState.writeReg, AState.writeArr, h28, h29]
 
 theorem arun_storeLit_reg28 (k cell value : Nat) (s : AState) (hcM : cell < M) :
     (arun k s (storeLit cell value)).regs 28 = cell := by

@@ -466,7 +466,7 @@ theorem bodyA_spec (c : Cfg) (idx : Nat) (s : RegState) (hadm : Admissible c)
       Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true,
       hidxM, hRmodM, hne, hqM, hnM, hdM, h1M, h0M, h2M, hloM, hXM, hXM2, hs2M, hs3M, hs4M,
       ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, ite_add_ite', one_sub_bit,
-      ite_ite_and, ite_ite_and', ge_iff_le]
+      ]
 
 /-! ## Stage B: one round of trial division -/
 
@@ -520,10 +520,10 @@ theorem bodyB_spec (idx d : Nat) (s : RegState)
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
     simp only [bodyB, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
       Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true,
-      h7, hdne, h1M, h0M, hremM, hdivM, hs2M, hselM, hsel2, hdivremM, hd1M,
+      h7, hdne, h1M, h0M, hremM, hdivM, hs2M, hselM, hdivremM, hd1M,
       hmultM, hmulM, hd1sub, trialStep,
-      ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, ite_add_ite', one_sub_bit,
-      ite_ite_and, ite_ite_and', ge_iff_le,
+      ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, one_sub_bit,
+      ite_ite_and,
       hor _ _ h3 (hbit _ _)]
 
 /-! ## Stage C₁: decode the candidate's mirror term -/
@@ -605,8 +605,8 @@ theorem bodyC1_spec (c : Cfg) (idx : Nat) (s : RegState) (h : Nat)
       Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true,
       h1M, h0M, hres1M, hres1sub, htailM, hhM, hsqM, hXXM, hscaleM, hscM, hsumM,
       hsubM, hquotM, hdivne, htermM, hRm, msub_bit _ h3,
-      ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, ite_add_ite', one_sub_bit,
-      ite_ite_and, ite_ite_and', ge_iff_le]
+      ite_mod, bit_mul_val, ite_add_ite, one_sub_bit,
+      ]
 
 /-! ## Stage C₂: advance the running count and test the threshold -/
 
@@ -670,8 +670,8 @@ theorem bodyC2_spec (c : Cfg) (idx : Nat) (s : RegState) (hadm : Admissible c)
       Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true,
       h1M, h0M, hcapM, hmulM, hlowM, hX1M, htightM, hthreshM, hprodM,
       badOf, threshOf,
-      ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, ite_add_ite', one_sub_bit,
-      ite_ite_and, ite_ite_and', ge_iff_le, hgate, hfin] <;>
+      ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, one_sub_bit,
+      ge_iff_le, hgate, hfin] <;>
     try rfl
 
 /-! ## Trial-division facts, in ordinary arithmetic
@@ -704,7 +704,7 @@ theorem trialStep_phi_pos (d : Nat) (hd : 2 ≤ d) (t : Trial) (h : 1 ≤ t.phi)
   calc 1 = 1 * 1 := rfl
     _ ≤ t.phi * (if t.res % d = 0 then d - 1 else 1) := Nat.mul_le_mul h h1
 
-theorem trialStep_prod (d : Nat) (hd : 2 ≤ d) (t : Trial) :
+theorem trialStep_prod (d : Nat) (_hd : 2 ≤ d) (t : Trial) :
     (trialStep d t).phi * (trialStep d t).res ≤ t.phi * t.res := by
   show t.phi * (if t.res % d = 0 then d - 1 else 1)
       * (if t.res % d = 0 then t.res / d else t.res) ≤ t.phi * t.res
@@ -849,7 +849,7 @@ theorem divReg_defined (k r : Nat) : ∀ (l : List Instr),
         · show (denoteOp op (denoteOperand k s a) (denoteOperand k s (.reg r))).isSome = true
           have hden : denoteOperand k s (.reg r) = s r := rfl
           rcases hop with rfl | rfl <;>
-            simp only [denoteOp, hden, hr, ite_false, Option.isSome_some, ite_eq_right hr]
+            simp only [denoteOp, hden, hr, ite_false, Option.isSome_some]
       refine ⟨hhead, ih (fun j hj => hdest j (by simp [hj]))
         (fun j hj => hshape j (by simp [hj])) _ ?_⟩
       have hne : ¬ (r = sdest i) := fun hEq => hdest i (by simp) hEq.symm
@@ -860,15 +860,15 @@ theorem divReg_defined (k r : Nat) : ∀ (l : List Instr),
 theorem bodyA_defined (c : Cfg) (idx : Nat) (s : RegState)
     (hne : ¬ (c.rounds % M = 0)) : SAllDefined idx s (bodyA c) := by
   simp only [bodyA, SAllDefined, SDefined, sdest, sval, denoteOperand, denoteOp,
-    RegState.set, Option.getD_some, Option.isSome_some, reduceIte, reduceCtorEq,
-    Nat.reduceEqDiff, ite_true, hne, and_true, true_and]
+    RegState.set, Option.getD_some, Option.isSome_some, reduceIte,
+    Nat.reduceEqDiff, ite_true, hne, and_true]
 
 theorem bodyB_defined (idx : Nat) (s : RegState) (hd : ¬ (s 7 = 0)) :
     SAllDefined idx s bodyB := by
   refine divReg_defined idx 7 bodyB ?_ ?_ s hd
   · intro i hi
     simp only [bodyB, List.mem_cons, List.not_mem_nil, or_false] at hi
-    rcases hi with h|h|h|h|h|h|h|h|h|h|h|h|h|h|h <;> subst h <;> simp +decide [sdest]
+    rcases hi with h|h|h|h|h|h|h|h|h|h|h|h|h|h|h <;> subst h <;> simp +decide []
   · intro i hi
     simp only [bodyB, List.mem_cons, List.not_mem_nil, or_false] at hi
     rcases hi with h|h|h|h|h|h|h|h|h|h|h|h|h|h|h <;> subst h
@@ -891,7 +891,7 @@ theorem bodyB_defined (idx : Nat) (s : RegState) (hd : ¬ (s 7 = 0)) :
 open LeanCompCert.Verified.ArrayFoldBridge in
 set_option maxHeartbeats 1000000 in
 theorem bodyC1_defined (c : Cfg) (idx : Nat) (s : RegState) (h : Nat)
-    (hs : ∀ j, s j < M) (hres : 1 ≤ s 2) (hphi : 1 ≤ s 4)
+    (hs : ∀ j, s j < M) (hres : 1 ≤ s 2) (_hphi : 1 ≤ s 4)
     (hhdef : s 4 * (if (s 2 : Nat) ≠ 1 then s 2 - 1 else 1) = h)
     (hhlt : h < M) (hhsq : h * h < M) (hhpos : 1 ≤ h) :
     SAllDefined idx s (bodyC1 c) := by
@@ -917,10 +917,10 @@ theorem bodyC1_defined (c : Cfg) (idx : Nat) (s : RegState) (h : Nat)
     omega
   have h32 : (srun idx s bodyC1a) 32 = h * h := by
     simp only [bodyC1a, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff, ite_true,
+      Option.getD_some, reduceIte, Nat.reduceEqDiff, ite_true,
       h1M, h0M, hres1M, hres1sub, htailM, hhM, hsqM,
-      ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, ite_add_ite',
-      one_sub_bit, ite_ite_and, ite_ite_and', ge_iff_le]
+      ite_mod, bit_mul_val, ite_add_ite,
+      one_sub_bit]
   rw [bodyC1, SAllDefined_append]
   refine ⟨noDiv_defined idx bodyC1a ?_ s, ?_⟩
   · intro i hi
@@ -1284,9 +1284,9 @@ theorem entry_inv (c : Cfg) (hadm : Admissible c) : Inv c (entry c) := by
   · show (((initialState.set 1 (c.m0 % M)).set 2 (1 % M)).set 4 (1 % M)) 3 ≤ 1
     simp [RegState.set, initialState]
   · show 1 ≤ (((initialState.set 1 (c.m0 % M)).set 2 (1 % M)).set 4 (1 % M)) 2
-    simp [RegState.set, initialState, h1M]
+    simp [RegState.set, h1M]
   · show 1 ≤ (((initialState.set 1 (c.m0 % M)).set 2 (1 % M)).set 4 (1 % M)) 4
-    simp [RegState.set, initialState, h1M]
+    simp [RegState.set, h1M]
   · show (((initialState.set 1 (c.m0 % M)).set 2 (1 % M)).set 4 (1 % M)) 4
         * (((initialState.set 1 (c.m0 % M)).set 2 (1 % M)).set 4 (1 % M)) 2 ≤ bnd c
     simp only [RegState.set, initialState, h1M, reduceIte, Nat.reduceEqDiff]
@@ -1323,37 +1323,37 @@ theorem bodyA_wf (c : Cfg) : ∀ i ∈ bodyA c, i.WF regCount := by
   intro i hi
   simp only [bodyA, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h|h|h|h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide [Instr.WF, Operand.WF]
 
 theorem bodyB_wf : ∀ i ∈ bodyB, i.WF regCount := by
   intro i hi
   simp only [bodyB, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h|h|h|h|h|h|h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide []
 
 theorem bodyC1a_wf : ∀ i ∈ bodyC1a, i.WF regCount := by
   intro i hi
   simp only [bodyC1a, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide []
 
 theorem bodyC1b_wf (c : Cfg) : ∀ i ∈ bodyC1b c, i.WF regCount := by
   intro i hi
   simp only [bodyC1b, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide [Instr.WF, Operand.WF]
 
 theorem bodyC2_wf (c : Cfg) : ∀ i ∈ bodyC2 c, i.WF regCount := by
   intro i hi
   simp only [bodyC2, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h|h|h|h|h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide [Instr.WF, Operand.WF]
 
 theorem initBlock_wf (c : Cfg) : ∀ i ∈ initBlock c, i.WF regCount := by
   intro i hi
   simp only [initBlock, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide [Instr.WF, Operand.WF]
 
 theorem body_wf (c : Cfg) : ∀ i ∈ body c, i.WF regCount := by
   intro i hi
@@ -1450,7 +1450,7 @@ theorem gstep_qX (c : Cfg) (idx : Nat) (a : Abs) (q X : Nat)
   · show badOf c (c.lo + idx / c.rounds) _ _ _ = _
     simp only [badOf, accStep, hX, hq, hbad, hacc, ht]
   · show accStep _ _ = _
-    simp only [accStep, hX, hq, hbad, hacc, ht]
+    simp only [accStep, hX, hq, hacc, ht]
 
 /-- **One round of one candidate**, in ordinary arithmetic. -/
 theorem gstep_round (c : Cfg) (n r : Nat) (hr : r < c.rounds) (a : Abs)
@@ -1474,7 +1474,7 @@ theorem gstep_round (c : Cfg) (n r : Nat) (hr : r < c.rounds) (a : Abs)
     split <;> simp
 
 /-- **The prefix of one block.** -/
-theorem block_prefix (c : Cfg) (hR : 0 < c.rounds) (n : Nat) (a : Abs)
+theorem block_prefix (c : Cfg) (_hR : 0 < c.rounds) (n : Nat) (a : Abs)
     (hacc : a.acc < M) :
     ∀ k, k < c.rounds →
       (List.range (k + 1)).foldl (fun x r => gstep c (n * c.rounds + r) x) a =
@@ -1517,7 +1517,7 @@ theorem block_spec (c : Cfg) (hR : 0 < c.rounds) (n : Nat) (a : Abs)
   rfl
 
 /-- **The candidate fold.** -/
-theorem fold_blocks (c : Cfg) (hR : 0 < c.rounds) (hm0 : c.m0 < M) : ∀ n,
+theorem fold_blocks (c : Cfg) (hR : 0 < c.rounds) (_hm0 : c.m0 < M) : ∀ n,
     ((List.range n).foldl
         (BlockedFold.block c.rounds (fun y i => gstep c i y)) (obs (entry c))).bad
       = badAt c n ∧

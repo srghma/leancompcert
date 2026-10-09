@@ -421,24 +421,24 @@ private theorem powerBlock_ok : powerBlock.all instrOK = true := by
   simp only [powerBlock, List.all_append, List.all_cons, List.all_nil,
     List.all_flatMap, Bool.and_eq_true]
   refine ⟨⟨?_, ?_, trivial⟩, ?_⟩
-  · simp +decide [instrOK, operandOK, wmRegCount, rM, rP]
-  · simp +decide [instrOK, operandOK, wmRegCount, rPow, rM, rN]
+  · simp +decide []
+  · simp +decide []
   · rw [List.all_eq_true]
     intro x _
-    simp +decide [powerRound, instrOK, operandOK, wmRegCount, rM, rP, rN,
-      rT1, rPow]
+    simp +decide [
+      ]
 
 theorem wmPre_ok (c : Cfg) : (wmPre c).all instrOK = true := by
   simp only [wmPre, List.all_append, Bool.and_eq_true]
   refine ⟨⟨⟨⟨?_, ?_⟩, ?_⟩, powerBlock_ok⟩, ?_⟩ <;>
-    simp +decide [decodeBlock, scanBlock, selectBlock, lambdaPre, instrOK,
-      operandOK, wmRegCount, rBad, rAcc, rL, rS, rN, rR, rD, rG, rT1, rT2,
-      rM, rP, rIsP, rPow, rLam, rC, rT3, rLow, rIU]
+    simp +decide [decodeBlock, selectBlock, instrOK,
+      operandOK, rS, rN, rR, rD, rT1, rT2,
+      rP, rIsP, rC]
 
 theorem wmPost_ok (c : Cfg) : (wmPost c).all instrOK = true := by
   simp +decide [wmPost, lambdaPost, accBlock, capBlock, rowBlock,
-    ladderBlock, resetBlock, List.all_append, instrOK, operandOK,
-    wmRegCount, rBad, rAcc, rL, rS, rN, rR, rD, rG, rT1, rT2, rM, rP,
+    ladderBlock, resetBlock, instrOK, operandOK,
+    rBad, rAcc, rL, rS, rN, rT1, rT2,
     rIsP, rPow, rLam, rC, rT3, rLow, rIU]
 
 theorem wmBody_wf (c : Cfg) : ∀ a ∈ wmBody c, a.WF wmRegCount := by
@@ -453,7 +453,7 @@ theorem wmInit_wf (c : Cfg) : ∀ a ∈ wmInit c, a.WF wmRegCount := by
   intro a ha
   rcases List.mem_append.mp ha with h | h
   · refine lift_wf ?_ a h
-    simp +decide [instrOK, operandOK, wmRegCount, rAcc, rL]
+    simp +decide [instrOK, operandOK, rAcc, rL]
   · obtain ⟨e, _, he⟩ := List.mem_flatMap.mp h
     simp only [List.mem_cons, List.not_mem_nil, or_false] at he
     rcases he with rfl | rfl | rfl
@@ -503,14 +503,14 @@ theorem lambdaPost_acc_cap_row_defined (c : Cfg) (len k : Nat) (s : AState) :
     AllDefined len k s
       (lift (lambdaPost ++ accBlock ++ capBlock c ++ rowBlock c)) := by
   refine allDefined_lift_of_noDiv len k _ s ?_
-  simp +decide [lambdaPost, accBlock, capBlock, rowBlock, List.all_append,
+  simp +decide [lambdaPost, accBlock, capBlock, rowBlock,
     InstrBlock.NoDivI]
 
 /-- **The reset stage is defined, unconditionally.** -/
 theorem resetBlock_defined (len k : Nat) (s : AState) :
     AllDefined len k s (lift resetBlock) := by
   refine allDefined_lift_of_noDiv len k _ s ?_
-  simp +decide [resetBlock, InstrBlock.NoDivI]
+  simp +decide []
 
 /-! ## The loop invariant
 
@@ -613,7 +613,7 @@ theorem decodeBlock_defined (c : Cfg) (k : Nat) (s : AState) (hBM : c.B < M)
   have hbne : ¬ (c.B % M = 0) := by rw [Nat.mod_eq_of_lt hBM]; omega
   rw [allDefined_lift]
   refine ⟨?_, ?_, ?_, ?_, trivial⟩ <;>
-    simp [decodeBlock, InstrBlock.SDefined, InstrBlock.sdest, InstrBlock.sval,
+    simp [InstrBlock.SDefined, InstrBlock.sdest, InstrBlock.sval,
       denoteOperand, denoteOp, hbne]
 
 /-! ### The other two partial stages
@@ -1144,7 +1144,7 @@ theorem wmPost_sdefined (c : Cfg) (k : Nat) (w : RegState) (h2 : 2 ≤ w rN)
   refine sAllDefined_append (sAllDefined_append ?_ ?_) ?_
   · refine sAllDefined_of_noDiv k _ _ ?_
     simp +decide [wmPostHead, lambdaPost, accBlock, capBlock, rowBlock,
-      List.all_append, InstrBlock.NoDivI]
+      InstrBlock.NoDivI]
   · exact ladderBlock_defined k _ (by rw [hframe]; exact h2) (by rw [hframe]; exact hM)
   · exact sAllDefined_of_noDiv k _ _ (by decide)
 
@@ -2215,7 +2215,7 @@ theorem rowBlock_rBad (k : Nat) (z : RegState) (c : Cfg) (commit : Prop)
     unfold rwD
     rw [srun_read_last k rT2 rwC rw3 rfl, hDv]
     by_cases hx : z rAcc * 2500 % M < z rN * z rN % M * 20016 % M <;>
-      simp [hx] <;> omega
+      simp [] <;> omega
   have hE : srun k z (rwE c) rLow = (if c.lower ≤ z rN then 1 else 0) := by
     unfold rwE
     rw [srun_read_last k rLow rwD (rw4 c) rfl]
@@ -2261,7 +2261,7 @@ theorem rowBlock_rBad (k : Nat) (z : RegState) (c : Cfg) (commit : Prop)
     by_cases h1 : commit <;>
       by_cases h2 : c.lower ≤ z rN <;>
       by_cases h3 : (z rAcc * 2500 % M < z rN * z rN % M * 20016 % M) <;>
-      simp [h1, h2, h3]
+      simp [h1, h2]
   rw [rowBlock_eq, srun_read_last k rBad (rwG c) rw7 rfl]
   unfold rw7
   rw [sval_binop, denoteOperand_reg, denoteOperand_reg, hG,
@@ -2543,7 +2543,7 @@ theorem wmPost_vals (c : Cfg) (k : Nat) (w : RegState)
     (hlam : lam = if isP then L else (if pw then w rT3 else 0))
     (haddend : addend = ((((lam >>> 20) + 1) * n % M) >>> 24) + 1)
     (hacc' : acc' = (acc + (if commit then addend else 0)) % M)
-    (hLM : L < M) (hT3M : w rT3 < M) (hAccM : acc < M) (hSM : S < M)
+    (hLM : L < M) (hT3M : w rT3 < M) (_hAccM : acc < M) (hSM : S < M)
     (h2 : 2 ≤ n) (hn25 : n ≤ 2 ^ 25) (hcapM : c.capA < M) (hlowM : c.lower < M) :
     srun k w (wmPost c) rAcc = acc' ∧
     srun k w (wmPost c) rBad =

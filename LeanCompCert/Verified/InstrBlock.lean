@@ -125,7 +125,7 @@ theorem srun_lt (k : Nat) :
       intro j'
       by_cases hEq : j' = sdest i
       · subst hEq
-        simp only [RegState.set, ite_eq_left rfl]
+        simp only [RegState.set]
         cases i with
         | mov d src =>
             show denoteOperand k s src < M
@@ -260,7 +260,7 @@ theorem srun_lt_of_lt (k : Nat) :
       intro j'
       by_cases hEq : j' = sdest i
       · subst hEq
-        simp only [RegState.set, ite_eq_left rfl]
+        simp only [RegState.set]
         cases i with
         | mov d src =>
             show denoteOperand k s src < M

@@ -331,7 +331,7 @@ theorem mul2_val (a0 a1 b0 b1 : Nat)
   exact hident
 
 theorem mul2_lt (a0 a1 b0 b1 : Nat)
-    (ha0 : a0 < M) (ha1 : a1 < M) (hb0 : b0 < M) (hb1 : b1 < M) :
+    (ha0 : a0 < M) (_ha1 : a1 < M) (hb0 : b0 < M) (_hb1 : b1 < M) :
     (mul2 a0 a1 b0 b1).1 < M ∧ (mul2 a0 a1 b0 b1).2.1 < M ∧
       (mul2 a0 a1 b0 b1).2.2.1 < M ∧ (mul2 a0 a1 b0 b1).2.2.2 < M := by
   simp only [mul2, addcW]
@@ -357,8 +357,8 @@ def redcStep2 (n0 n1 np t0 t1 t2 t3 : Nat) : Nat × Nat × Nat × Nat :=
   (w1.1, w2.1, w3.1, w3.2)
 
 theorem redcStep2_lt (n0 n1 np t0 t1 t2 t3 : Nat)
-    (hn0 : n0 < M) (hn1 : n1 < M) (hnp : np < M)
-    (h0 : t0 < M) (h1 : t1 < M) (h2 : t2 < M) (h3 : t3 < M) :
+    (_hn0 : n0 < M) (_hn1 : n1 < M) (_hnp : np < M)
+    (_h0 : t0 < M) (_h1 : t1 < M) (_h2 : t2 < M) (_h3 : t3 < M) :
     (redcStep2 n0 n1 np t0 t1 t2 t3).1 < M ∧
       (redcStep2 n0 n1 np t0 t1 t2 t3).2.1 < M ∧
       (redcStep2 n0 n1 np t0 t1 t2 t3).2.2.1 < M ∧
@@ -368,7 +368,7 @@ theorem redcStep2_lt (n0 n1 np t0 t1 t2 t3 : Nat)
 
 /-- **One machine reduction step realizes one `Montgomery.redcStep`.** -/
 theorem redcStep2_val (n0 n1 np t0 t1 t2 t3 : Nat)
-    (hn0 : n0 < M) (hn1 : n1 < M) (hnp : np < M)
+    (hn0 : n0 < M) (hn1 : n1 < M) (_hnp : np < M)
     (h0 : t0 < M) (h1 : t1 < M) (h2 : t2 < M) (h3 : t3 < M)
     (hinv : MontMultiplier (pval n0 n1) np) :
     qval (redcStep2 n0 n1 np t0 t1 t2 t3).1
@@ -491,7 +491,7 @@ def montMul2 (n0 n1 np a0 a1 b0 b1 : Nat) : Nat × Nat :=
 
 /-- Two limbs below `2⁶⁴` whose value is below `2¹²⁸` really are the value. -/
 theorem qval_of_lt (t0 t1 t2 t3 : Nat)
-    (h0 : t0 < M) (h1 : t1 < M) (h2 : t2 < M) (h3 : t3 < M)
+    (h0 : t0 < M) (h1 : t1 < M) (_h2 : t2 < M) (_h3 : t3 < M)
     (hlt : qval t0 t1 t2 t3 < M * M) :
     t2 = 0 ∧ t3 = 0 ∧ qval t0 t1 t2 t3 = pval t0 t1 := by
   simp only [qval, pval, M_val] at h0 h1 hlt ⊢
@@ -505,7 +505,7 @@ true modular product.
 theorem montMul2_val (n0 n1 np a0 a1 b0 b1 : Nat)
     (hn0 : n0 < M) (hn1 : n1 < M) (hnp : np < M)
     (ha0 : a0 < M) (ha1 : a1 < M) (hb0 : b0 < M) (hb1 : b1 < M)
-    (hodd : pval n0 n1 % 2 = 1) (hN : 0 < pval n0 n1)
+    (hodd : pval n0 n1 % 2 = 1) (_hN : 0 < pval n0 n1)
     (hHalf : 2 * pval n0 n1 ≤ M * M)
     (hinv : MontMultiplier (pval n0 n1) np)
     (ha : pval a0 a1 < pval n0 n1) (hb : pval b0 b1 < pval n0 n1) :
@@ -573,7 +573,7 @@ def dbl2 (n0 n1 x0 x1 : Nat) : Nat × Nat :=
   condSub2 n0 n1 d0 d1
 
 theorem dbl2_val (n0 n1 x0 x1 : Nat)
-    (hn0 : n0 < M) (hn1 : n1 < M) (hx0 : x0 < M) (hx1 : x1 < M)
+    (hn0 : n0 < M) (hn1 : n1 < M) (hx0 : x0 < M) (_hx1 : x1 < M)
     (hHalf : 2 * pval n0 n1 ≤ M * M)
     (hx : pval x0 x1 < pval n0 n1) :
     pval (dbl2 n0 n1 x0 x1).1 (dbl2 n0 n1 x0 x1).2 =

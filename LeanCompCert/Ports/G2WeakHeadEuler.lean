@@ -860,7 +860,7 @@ theorem newtonStepI_spec (k : Nat) (s : RegState)
   refine ⟨?_, ?_, ?_⟩
   · show srun k s newtonStepI 11 = nstep (s 10) (s 11)
     simp only [newtonStepI, srun, sdest, sval, denoteOperand, denoteOp,
-      RegState.set, Option.getD_some, hne, reduceIte, reduceCtorEq,
+      RegState.set, Option.getD_some, hne,
       Nat.reduceEqDiff, ite_true, ite_false, h0M, h1M, hxsM, hqM, httM, hstep]
   · show srun k s newtonStepI 10 = s 10
     refine srun_untouched k 10 newtonStepI ?_ s
@@ -940,8 +940,8 @@ theorem adjustI_spec (k : Nat) (s : RegState)
   refine ⟨?_, ?_, ?_⟩
   · show srun k s adjustI 11 = nadj (s 10) (s 11)
     simp only [adjustI, srun, sdest, sval, denoteOperand, denoteOp,
-      RegState.set, Option.getD_some, hne, reduceIte, reduceCtorEq,
-      Nat.reduceEqDiff, ite_true, ite_false, h0M, h1M, hxsM, hqM, hsub]
+      RegState.set, Option.getD_some, hne,
+      Nat.reduceEqDiff, ite_true, ite_false, h0M, hxsM, hqM, hsub]
   · show srun k s adjustI 10 = s 10
     refine srun_untouched k 10 adjustI ?_ s
     intro i hi
@@ -992,11 +992,11 @@ theorem clampI_spec (k dst lo hi : Nat) (s : RegState)
   refine ⟨?_, ?_⟩
   · show srun k s (clampI dst lo hi) dst = clampv lo hi (s 11)
     simp only [clampI, srun, sdest, sval, denoteOperand, denoteOp,
-      RegState.set, Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
-      ite_true, ite_false, eq_self_iff_true, hne11, hne12, hne13, hne14,
+      RegState.set, Option.getD_some, Nat.reduceEqDiff,
+      ite_true, ite_false, hne12, hne13, hne14,
       hne12', hne13', hne14',
       h0M, h1M, hloM, hhiM, hxM,
-      ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, ite_add_ite',
+      ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite,
       one_sub_bit, gt_iff_lt]
     rw [clampv_machine]
   · intro j hj12 hj13 hj14 hjdst
@@ -1010,7 +1010,7 @@ set_option maxHeartbeats 1000000 in
 theorem levelI_spec (k src dst seed count lo hi : Nat) (s : RegState)
     (hdst : 15 ≤ dst) (hdst2 : dst < 20)
     (hseed : seed ≤ s src) (hN : s src < 2 ^ 63) (hlo : lo < M) (hhi : hi < M)
-    (hsrc10 : src ≠ 10) (hsrc11 : src ≠ 11) :
+    (_hsrc10 : src ≠ 10) (_hsrc11 : src ≠ 11) :
     let s' := srun k s (levelI src dst seed count lo hi)
     s' dst = clampv lo hi (newtonRun (s src) seed count) ∧
       ∀ j, j ≠ 10 → j ≠ 11 → j ≠ 12 → j ≠ 13 → j ≠ 14 → j ≠ dst →
@@ -1037,7 +1037,7 @@ theorem levelI_spec (k src dst seed count lo hi : Nat) (s : RegState)
     rw [← hg1]
     show (if (10:Nat) = 11 then seed % M
       else if (10:Nat) = 10 then s src else s 10) = s src
-    simp only [reduceCtorEq, Nat.reduceEqDiff, reduceIte]
+    simp only [Nat.reduceEqDiff, reduceIte]
   have h1_11 : s1 11 = seed := by
     rw [← hg1]
     show (if (11:Nat) = 11 then seed % M
@@ -1126,23 +1126,23 @@ theorem bodyA_spec (c : Cfg) (idx : Nat) (s : RegState)
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
   · show srun idx s (bodyA c) 5 = idx % c.rounds
     simp only [bodyA, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hne, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, hne, Nat.reduceEqDiff,
       ite_true, ite_false, hidxM, hRmodM, hqM, hnM, hloM, hXM, hdM, hR1M, h0M, h2M]
   · show srun idx s (bodyA c) 6 = c.lo + idx / c.rounds
     simp only [bodyA, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hne, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, hne, Nat.reduceEqDiff,
       ite_true, ite_false, hidxM, hRmodM, hqM, hnM, hloM, hXM, hdM, hR1M, h0M, h2M]
   · show srun idx s (bodyA c) 7 = idx % c.rounds + 2
     simp only [bodyA, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hne, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, hne, Nat.reduceEqDiff,
       ite_true, ite_false, hidxM, hRmodM, hqM, hnM, hloM, hXM, hdM, hR1M, h0M, h2M]
   · show srun idx s (bodyA c) 8 = _
     simp only [bodyA, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hne, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, hne, Nat.reduceEqDiff,
       ite_true, ite_false, hidxM, hRmodM, hqM, hnM, hloM, hXM, hdM, hR1M, h0M, h2M]
   · show srun idx s (bodyA c) 9 = _
     simp only [bodyA, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hne, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, hne, Nat.reduceEqDiff,
       ite_true, ite_false, hidxM, hRmodM, hqM, hnM, hloM, hXM, hdM, hR1M, h0M, h2M]
   · intro j hj5 hj6 hj7 hj8 hj9
     refine srun_untouched idx j (bodyA c) ?_ s
@@ -1187,8 +1187,8 @@ theorem bodyB_spec (idx q n : Nat) (s : RegState)
   refine ⟨?_, ?_⟩
   · show srun idx s bodyB 2 = _
     simp only [bodyB, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hne, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
-      ite_true, ite_false, h5, h6, h7, h9, h0M, h1M, hremM,
+      Option.getD_some, hne, Nat.reduceEqDiff,
+      ite_true, ite_false, h6, h7, h9, h0M, h1M, hremM,
       ite_mod, bit_mul_val, bit'_mul_val, ite_ite_and, one_sub_bit,
       hkeepM, horM]
   · intro j hj2 hj20 hj21 hj22 hj23 hj24 hj50
@@ -1455,12 +1455,12 @@ theorem chunkI_apply (k c A : Nat) (s : RegState)
   refine ⟨?_, ?_, ?_⟩
   · show srun k s (chunkI c) 19 = _
     simp only [chunkI, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hane, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, hane, Nat.reduceEqDiff,
       ite_true, ite_false, h19, h25, hcM, hshl, hwM, hqM, hsumM, hdivM, hremM]
     exact hstep1
   · show srun k s (chunkI c) 25 = _
     simp only [chunkI, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hane, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, hane, Nat.reduceEqDiff,
       ite_true, ite_false, h19, h25, hcM, hshl, hwM, hqM, hsumM, hdivM, hremM]
     exact hstep2
   · intro j hj19 hj25 hj26 hj51
@@ -1487,15 +1487,15 @@ theorem bodyF1_spec (k : Nat) (s : RegState)
   refine ⟨?_, ?_, ?_, ?_⟩
   · show srun k s bodyF1 18 = s 17 * s 17
     simp only [bodyF1, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hvne, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, hvne, Nat.reduceEqDiff,
       ite_true, ite_false, hvvM, h63M, hdivM, hremM]
   · show srun k s bodyF1 19 = 2 ^ 63 / (s 17 * s 17)
     simp only [bodyF1, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hvne, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, hvne, Nat.reduceEqDiff,
       ite_true, ite_false, hvvM, h63M, hdivM, hremM]
   · show srun k s bodyF1 25 = 2 ^ 63 % (s 17 * s 17)
     simp only [bodyF1, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hvne, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, hvne, Nat.reduceEqDiff,
       ite_true, ite_false, hvvM, h63M, hdivM, hremM]
   · intro j hj18 hj19 hj25
     refine srun_untouched k j bodyF1 ?_ s
@@ -1533,15 +1533,15 @@ theorem bodyF2P_spec (k L : Nat) (s : RegState)
   refine ⟨?_, ?_, ?_, ?_, ?_⟩
   · show srun k s (bodyF2P L) 27 = s 19 + 1
     simp only [bodyF2P, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hdne, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, hdne, Nat.reduceEqDiff,
       ite_true, ite_false, h1M, hLM, htM, hwM, hdivM, hremM]
   · show srun k s (bodyF2P L) 19 = (s 19 + 1) * L / s 18
     simp only [bodyF2P, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hdne, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, hdne, Nat.reduceEqDiff,
       ite_true, ite_false, h1M, hLM, htM, hwM, hdivM, hremM]
   · show srun k s (bodyF2P L) 25 = (s 19 + 1) * L % s 18
     simp only [bodyF2P, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hdne, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, hdne, Nat.reduceEqDiff,
       ite_true, ite_false, h1M, hLM, htM, hwM, hdivM, hremM]
   · show srun k s (bodyF2P L) 18 = s 18
     refine srun_untouched k 18 (bodyF2P L) ?_ s
@@ -1618,25 +1618,25 @@ theorem bodyF3P_spec (k U W1 W2 : Nat) (s : RegState)
   refine ⟨?_, ?_, ?_, ?_, ?_⟩
   · show srun k s (bodyF3P U W1 W2) 28 = s 19 + 1
     simp only [bodyF3P, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hwne, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, hwne, Nat.reduceEqDiff,
       ite_true, ite_false, gt_iff_lt, h0M, h1M, hUM, hW1M, hu1M,
       ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, one_sub_bit,
       hminsel, hminM, hW2M, hsubM, hsub1M, hmulM, hsumM, hdivM]
   · show srun k s (bodyF3P U W1 W2) 29 = min (s 19 + 1) U
     simp only [bodyF3P, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hwne, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, hwne, Nat.reduceEqDiff,
       ite_true, ite_false, gt_iff_lt, h0M, h1M, hUM, hW1M, hu1M,
       ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, one_sub_bit,
       hminsel, hminM, hW2M, hsubM, hsub1M, hmulM, hsumM, hdivM]
   · show srun k s (bodyF3P U W1 W2) 30 = W1 - min (s 19 + 1) U
     simp only [bodyF3P, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hwne, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, hwne, Nat.reduceEqDiff,
       ite_true, ite_false, gt_iff_lt, h0M, h1M, hUM, hW1M, hu1M,
       ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, one_sub_bit,
       hminsel, hminM, hW2M, hsubM, hsub1M, hmulM, hsumM, hdivM]
   · show srun k s (bodyF3P U W1 W2) 31 = _
     simp only [bodyF3P, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hwne, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, hwne, Nat.reduceEqDiff,
       ite_true, ite_false, gt_iff_lt, h0M, h1M, hUM, hW1M, hu1M,
       ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, one_sub_bit,
       hminsel, hminM, hW2M, hsubM, hsub1M, hmulM, hsumM, hdivM]
@@ -1731,22 +1731,22 @@ theorem bodyF4P_spec (k H1 C1 : Nat) (s : RegState)
   refine ⟨?_, ?_, ?_, ?_, ?_⟩
   · show srun k s (bodyF4P H1 C1) 32 = _
     simp only [bodyF4P, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hne52, hne6, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, hne52, hne6, Nat.reduceEqDiff,
       ite_true, ite_false, h1M, hXnM, h52M, hqM, hH1M, hHM, hsqM, hC1M, haddM,
       hshr32, hn32M, hsubn, hmulHH, haddT1, hdivn]
   · show srun k s (bodyF4P H1 C1) 33 = _
     simp only [bodyF4P, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hne52, hne6, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, hne52, hne6, Nat.reduceEqDiff,
       ite_true, ite_false, h1M, hXnM, h52M, hqM, hH1M, hHM, hsqM, hC1M, haddM,
       hshr32, hn32M, hsubn, hmulHH, haddT1, hdivn]
   · show srun k s (bodyF4P H1 C1) 34 = _
     simp only [bodyF4P, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hne52, hne6, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, hne52, hne6, Nat.reduceEqDiff,
       ite_true, ite_false, h1M, hXnM, h52M, hqM, hH1M, hHM, hsqM, hC1M, haddM,
       hshr32, hn32M, hsubn, hmulHH, haddT1, hdivn]
   · show srun k s (bodyF4P H1 C1) 52 = _
     simp only [bodyF4P, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, hne52, hne6, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, hne52, hne6, Nat.reduceEqDiff,
       ite_true, ite_false, h1M, hXnM, h52M, hqM, hH1M, hHM, hsqM, hC1M, haddM,
       hshr32, hn32M, hsubn, hmulHH, haddT1, hdivn]
   · intro j hj51 hj52 hj53 hj32 hj33 hj54 hj34
@@ -1854,7 +1854,7 @@ theorem bodyF5P_spec (k A1 C2 : Nat) (s : RegState)
      rcases hi with h|h|h|h|h|h|h|h|h|h|h|h <;> subst h <;>
        simp only [sdest] <;> omega)
   | (simp only [bodyF5P, srun, sdest, sval, denoteOperand, denoteOp,
-      RegState.set, Option.getD_some, hd2ne, reduceIte, reduceCtorEq,
+      RegState.set, Option.getD_some, hd2ne,
       Nat.reduceEqDiff, ite_true, ite_false, h1M, h30M, hX1M, hA1M, hC2M,
       hshr1, hA2M, hsqM, hd2M, hsub1, hsumM, hE2M, hnEM, hnECM, hshr30, hFM])
 
@@ -1893,13 +1893,13 @@ theorem bodyGP1_spec (k AM C2 : Nat) (s : RegState)
   refine ⟨?_, ?_, ?_⟩
   · show srun k s (bodyGP1 AM C2) 44 = min (s 1) AM
     simp only [bodyGP1, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, Nat.reduceEqDiff,
       ite_true, ite_false, gt_iff_lt, h0M, h1M, h30M, hAMM, hC2M, haccM,
       ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, one_sub_bit,
       hminsel, hminM, hmulM, haddM, hshr30]
   · show srun k s (bodyGP1 AM C2) 46 = _
     simp only [bodyGP1, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, Nat.reduceEqDiff,
       ite_true, ite_false, gt_iff_lt, h0M, h1M, h30M, hAMM, hC2M, haccM,
       ite_mod, bit_mul_val, bit'_mul_val, ite_add_ite, one_sub_bit,
       hminsel, hminM, hmulM, haddM, hshr30]
@@ -1930,9 +1930,9 @@ theorem bodyGP2_spec (k UM F30 FC AM : Nat) (s : RegState)
   refine ⟨?_, ?_⟩
   · show srun k s (bodyGP2 UM F30 FC AM) 47 = _
     simp only [bodyGP2, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
+      Option.getD_some, Nat.reduceEqDiff,
       ite_true, ite_false, ge_iff_le, h15M, h16M, hUMM, hF30M, hFCM, hAMM,
-      h0M, h1M, ite_mod, bit_mul_val, bit'_mul_val, ite_ite_and]
+      h0M, h1M, ite_mod, bit_mul_val, ite_ite_and]
   · intro j hj51 hj52 hj47
     refine srun_untouched k j (bodyGP2 UM F30 FC AM) ?_ s
     intro i hi
@@ -1999,13 +1999,13 @@ theorem bodyGP3_spec (k : Nat) (s : RegState)
   refine ⟨?_, ?_, ?_, ?_⟩
   · show srun k s bodyGP3 1 = _
     simp only [bodyGP3, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
-      ite_true, ite_false, h0M, h1M, hsub2, hcontribM, hsubc, h55M, h56M,
+      Option.getD_some, reduceCtorEq, Nat.reduceEqDiff,
+      ite_true, ite_false, h1M, hsub2, hcontribM, hsubc, h55M, h56M,
       hselM, hsub47, hviolM, horM]
   · show srun k s bodyGP3 0 = _
     simp only [bodyGP3, srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
-      Option.getD_some, reduceIte, reduceCtorEq, Nat.reduceEqDiff,
-      ite_true, ite_false, h0M, h1M, hsub2, hcontribM, hsubc, h55M, h56M,
+      Option.getD_some, reduceCtorEq, Nat.reduceEqDiff,
+      ite_true, ite_false, h1M, hsub2, hcontribM, hsubc, h55M, h56M,
       hselM, hsub47, hviolM, horM]
   · show srun k s bodyGP3 2 = s 2
     refine srun_untouched k 2 bodyGP3 ?_ s
@@ -3865,7 +3865,7 @@ theorem newtonStepI_wf : ∀ i ∈ newtonStepI, i.WF regCount := by
   intro i hi
   simp only [newtonStepI, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide []
 
 theorem newtonStepsI_wf : ∀ count, ∀ i ∈ newtonStepsI count, i.WF regCount := by
   intro count
@@ -3884,7 +3884,7 @@ theorem adjustI_wf : ∀ i ∈ adjustI, i.WF regCount := by
   intro i hi
   simp only [adjustI, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide []
 
 theorem clampI_wf (dst lo hi : Nat) (hdst : dst < 57) :
     ∀ i ∈ clampI dst lo hi, i.WF regCount := by
@@ -3914,19 +3914,19 @@ theorem chunkI_wf (cs : Nat) : ∀ i ∈ chunkI cs, i.WF regCount := by
   intro i hi
   simp only [chunkI, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide [Instr.WF, Operand.WF]
 
 theorem bodyA_wf (c : Cfg) : ∀ i ∈ bodyA c, i.WF regCount := by
   intro i hi
   simp only [bodyA, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide [Instr.WF, Operand.WF]
 
 theorem bodyB_wf : ∀ i ∈ bodyB, i.WF regCount := by
   intro i hi
   simp only [bodyB, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide []
 
 theorem bodyC_wf (c : Cfg) : ∀ i ∈ bodyC c, i.WF regCount := by
   intro i hi
@@ -3938,47 +3938,47 @@ theorem bodyC_wf (c : Cfg) : ∀ i ∈ bodyC c, i.WF regCount := by
         · rcases List.mem_append.mp h4 with h5 | h5
           · simp only [List.mem_cons, List.not_mem_nil, or_false] at h5
             subst h5
-            simp +decide [Instr.WF, Operand.WF, regCount]
+            simp +decide []
           · exact levelI_wf 40 15 c.sdK c.stK kLo kHi (by decide) (by decide)
               i h5
         · simp only [List.mem_cons, List.not_mem_nil, or_false] at h4
           subst h4
-          simp +decide [Instr.WF, Operand.WF, regCount]
+          simp +decide []
       · exact levelI_wf 41 16 c.sdM c.stM mLo mHi (by decide) (by decide) i h3
     · simp only [List.mem_cons, List.not_mem_nil, or_false] at h2
       subst h2
-      simp +decide [Instr.WF, Operand.WF, regCount]
+      simp +decide []
   · exact levelI_wf 42 17 c.sdS c.stS sLo sHi (by decide) (by decide) i h
 
 theorem bodyF1_wf : ∀ i ∈ bodyF1, i.WF regCount := by
   intro i hi
   simp only [bodyF1, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide []
 
 theorem bodyF2_wf : ∀ i ∈ bodyF2, i.WF regCount := by
   intro i hi
-  simp only [bodyF2, bodyF2P, List.mem_cons, List.not_mem_nil, or_false] at hi
+  simp only [bodyF2, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide []
 
 theorem bodyF3_wf : ∀ i ∈ bodyF3, i.WF regCount := by
   intro i hi
   simp only [bodyF3, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h|h|h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide []
 
 theorem bodyF4_wf : ∀ i ∈ bodyF4, i.WF regCount := by
   intro i hi
   simp only [bodyF4, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h|h|h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide []
 
 theorem bodyF5_wf : ∀ i ∈ bodyF5, i.WF regCount := by
   intro i hi
   simp only [bodyF5, List.mem_cons, List.not_mem_nil, or_false] at hi
   rcases hi with h|h|h|h|h|h|h|h|h|h|h|h <;> subst h <;>
-    simp +decide [Instr.WF, Operand.WF, regCount]
+    simp +decide []
 
 theorem bodyF_wf : ∀ i ∈ bodyF, i.WF regCount := by
   intro i hi
@@ -4015,13 +4015,13 @@ theorem bodyG_wf (c : Cfg) : ∀ i ∈ bodyG c, i.WF regCount := by
   · rcases List.mem_append.mp h with h2 | h2
     · simp only [bodyGP1, List.mem_cons, List.not_mem_nil, or_false] at h2
       rcases h2 with h3|h3|h3|h3|h3|h3|h3|h3 <;> subst h3 <;>
-        simp +decide [Instr.WF, Operand.WF, regCount]
+        simp +decide [Instr.WF, Operand.WF]
     · simp only [bodyGP2, List.mem_cons, List.not_mem_nil, or_false] at h2
       rcases h2 with h3|h3|h3|h3|h3|h3|h3|h3|h3|h3|h3|h3|h3|h3|h3 <;>
-        subst h3 <;> simp +decide [Instr.WF, Operand.WF, regCount]
+        subst h3 <;> simp +decide [Instr.WF, Operand.WF]
   · simp only [bodyGP3, List.mem_cons, List.not_mem_nil, or_false] at h
     rcases h with h3|h3|h3|h3|h3|h3|h3|h3|h3 <;> subst h3 <;>
-      simp +decide [Instr.WF, Operand.WF, regCount]
+      simp +decide []
 
 theorem body_wf (c : Cfg) : ∀ i ∈ body c, i.WF regCount := by
   intro i hi
@@ -4043,7 +4043,7 @@ theorem initBlock_wf : ∀ i ∈ initBlock, i.WF regCount := by
   intro i hi
   simp only [initBlock, List.mem_cons, List.not_mem_nil, or_false] at hi
   subst hi
-  simp +decide [Instr.WF, Operand.WF, regCount]
+  simp +decide []
 
 theorem g2wProgram_wf (c : Cfg) : (g2wProgram c).WF :=
   ⟨by show 0 < 57; omega, initBlock_wf, body_wf c, (by intro i hi; cases hi)⟩

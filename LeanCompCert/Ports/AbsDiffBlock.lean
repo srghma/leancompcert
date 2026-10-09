@@ -69,12 +69,12 @@ theorem absDiffG_spec (k : Nat) (s : RegState) (a b dst t0 t1 : Nat)
   have hb := hs b
   simp only [absDiffG, srun_cons, srun_nil, sdest, sval, denoteOperand,
     denoteOp, Option.getD_some, RegState.set]
-  simp only [ite_eq_right ht01, ite_eq_right (Ne.symm ht01), ite_eq_right ht0a, ite_eq_right ht0b,
-    ite_eq_right ht1a, ite_eq_right ht1b, ite_eq_right hda, ite_eq_right hdb, ite_eq_right hdt0,
-    ite_eq_right hdt1, ite_eq_right (Ne.symm hda), ite_eq_right (Ne.symm hdb),
+  simp only [ite_eq_right ht01, ite_eq_right (Ne.symm ht01),
+    ite_eq_right hdt0,
+    ite_eq_right hdt1,
     ite_eq_right (Ne.symm hdt0), ite_eq_right (Ne.symm hdt1), ite_eq_right (Ne.symm ht0a),
     ite_eq_right (Ne.symm ht0b), ite_eq_right (Ne.symm ht1a), ite_eq_right (Ne.symm ht1b),
-    ite_eq_left rfl, ite_true]
+    ite_true]
   rw [show (1 : Nat) % M = 1 by decide]
   by_cases hge : s a ≥ s b
   · rw [ite_eq_left hge]
@@ -125,12 +125,12 @@ theorem maxG_spec (k : Nat) (s : RegState) (a b dst t0 t1 : Nat)
   have hb := hs b
   simp only [maxG, srun_cons, srun_nil, sdest, sval, denoteOperand,
     denoteOp, Option.getD_some, RegState.set]
-  simp only [ite_eq_right ht01, ite_eq_right (Ne.symm ht01), ite_eq_right ht0a, ite_eq_right ht0b,
-    ite_eq_right ht1a, ite_eq_right ht1b, ite_eq_right hda, ite_eq_right hdb, ite_eq_right hdt0,
-    ite_eq_right hdt1, ite_eq_right (Ne.symm hda), ite_eq_right (Ne.symm hdb),
-    ite_eq_right (Ne.symm hdt0), ite_eq_right (Ne.symm hdt1), ite_eq_right (Ne.symm ht0a),
-    ite_eq_right (Ne.symm ht0b), ite_eq_right (Ne.symm ht1a), ite_eq_right (Ne.symm ht1b),
-    ite_eq_left rfl, ite_true]
+  simp only [ite_eq_right ht01, ite_eq_right (Ne.symm ht01),
+    ite_eq_right hdt0,
+    ite_eq_right hdt1,
+    ite_eq_right (Ne.symm hdt1), ite_eq_right (Ne.symm ht0a),
+    ite_eq_right (Ne.symm ht0b), ite_eq_right (Ne.symm ht1b),
+    ite_true]
   rw [show (1 : Nat) % M = 1 by decide]
   by_cases hge : s a ≥ s b
   · rw [ite_eq_left hge]
@@ -181,12 +181,12 @@ theorem minG_spec (k : Nat) (s : RegState) (a b dst t0 t1 : Nat)
   have hb := hs b
   simp only [minG, srun_cons, srun_nil, sdest, sval, denoteOperand,
     denoteOp, Option.getD_some, RegState.set]
-  simp only [ite_eq_right ht01, ite_eq_right (Ne.symm ht01), ite_eq_right ht0a, ite_eq_right ht0b,
-    ite_eq_right ht1a, ite_eq_right ht1b, ite_eq_right hda, ite_eq_right hdb, ite_eq_right hdt0,
-    ite_eq_right hdt1, ite_eq_right (Ne.symm hda), ite_eq_right (Ne.symm hdb),
-    ite_eq_right (Ne.symm hdt0), ite_eq_right (Ne.symm hdt1), ite_eq_right (Ne.symm ht0a),
-    ite_eq_right (Ne.symm ht0b), ite_eq_right (Ne.symm ht1a), ite_eq_right (Ne.symm ht1b),
-    ite_eq_left rfl, ite_true]
+  simp only [ite_eq_right ht01, ite_eq_right (Ne.symm ht01),
+    ite_eq_right hdt0,
+    ite_eq_right hdt1,
+    ite_eq_right (Ne.symm hdt1), ite_eq_right (Ne.symm ht0a),
+    ite_eq_right (Ne.symm ht0b), ite_eq_right (Ne.symm ht1a),
+    ite_true]
   rw [show (1 : Nat) % M = 1 by decide]
   by_cases hge : s a ≥ s b
   · rw [ite_eq_left hge]
@@ -258,12 +258,12 @@ theorem tsubG_spec (k : Nat) (s : RegState) (a b dst t0 t1 : Nat)
   have hb := hs b
   simp only [tsubG, srun_cons, srun_nil, sdest, sval, denoteOperand,
     denoteOp, Option.getD_some, RegState.set]
-  simp only [ite_eq_right ht01, ite_eq_right (Ne.symm ht01), ite_eq_right ht0a, ite_eq_right ht0b,
-    ite_eq_right ht1a, ite_eq_right ht1b, ite_eq_right hda, ite_eq_right hdb, ite_eq_right hdt0,
-    ite_eq_right hdt1, ite_eq_right (Ne.symm hda), ite_eq_right (Ne.symm hdb),
-    ite_eq_right (Ne.symm hdt0), ite_eq_right (Ne.symm hdt1), ite_eq_right (Ne.symm ht0a),
-    ite_eq_right (Ne.symm ht0b), ite_eq_right (Ne.symm ht1a), ite_eq_right (Ne.symm ht1b),
-    ite_eq_left rfl, ite_true]
+  simp only [ite_eq_right ht01, ite_eq_right (Ne.symm ht01),
+    ite_eq_right hdt0,
+    ite_eq_right hdt1,
+    ite_eq_right (Ne.symm ht0a),
+    ite_eq_right (Ne.symm ht0b),
+    ite_true]
   by_cases hge : s a ≥ s b
   · rw [ite_eq_left hge, ite_eq_left hge]
     have e : (s a + (M - s b)) % M = s a - s b := by
@@ -326,15 +326,13 @@ theorem le128G_spec (k : Nat) (s : RegState)
       = (if s lo1 + M * s hi1 ≤ s lo2 + M * s hi2 then 1 else 0) := by
   simp only [le128G, srun_cons, srun_nil, sdest, sval, denoteOperand,
     denoteOp, Option.getD_some, RegState.set]
-  simp only [ite_eq_right ht01, ite_eq_right (Ne.symm ht01), ite_eq_right ht0lo1, ite_eq_right ht0hi1,
-    ite_eq_right ht0lo2, ite_eq_right ht0hi2, ite_eq_right ht1lo1, ite_eq_right ht1hi1, ite_eq_right ht1lo2,
-    ite_eq_right ht1hi2, ite_eq_right hdlo1, ite_eq_right hdhi1, ite_eq_right hdlo2, ite_eq_right hdhi2,
-    ite_eq_right hdt0, ite_eq_right hdt1, ite_eq_right (Ne.symm hdlo1), ite_eq_right (Ne.symm hdhi1),
-    ite_eq_right (Ne.symm hdlo2), ite_eq_right (Ne.symm hdhi2), ite_eq_right (Ne.symm hdt0),
+  simp only [ite_eq_right ht01, ite_eq_right (Ne.symm ht01),
+    ite_eq_right hdt0, ite_eq_right hdt1,
+    ite_eq_right (Ne.symm hdt0),
     ite_eq_right (Ne.symm hdt1), ite_eq_right (Ne.symm ht0lo1), ite_eq_right (Ne.symm ht0hi1),
     ite_eq_right (Ne.symm ht0lo2), ite_eq_right (Ne.symm ht0hi2), ite_eq_right (Ne.symm ht1lo1),
-    ite_eq_right (Ne.symm ht1hi1), ite_eq_right (Ne.symm ht1lo2), ite_eq_right (Ne.symm ht1hi2),
-    ite_eq_left rfl, ite_true]
+    ite_eq_right (Ne.symm ht1lo2),
+    ite_true]
   rcases Nat.lt_trichotomy (s hi1) (s hi2) with hlt | heq | hgt
   · rw [ite_eq_left hlt, ite_eq_right (Nat.ne_of_lt hlt)]
     have : s lo1 + M * s hi1 ≤ s lo2 + M * s hi2 := by

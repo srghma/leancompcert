@@ -101,7 +101,7 @@ theorem celStep_fst_add_one_lt_of_bound (n cel : Nat)
 /-! ## (F) the violation counter -/
 
 theorem violStep_spec (k n absV cel gate viol : Nat)
-    (hk : k ≤ 15) (hcel : 1 ≤ cel) (hcelM : cel < M)
+    (hk : k ≤ 15) (_hcel : 1 ≤ cel) (_hcelM : cel < M)
     (hn : n + 2 ^ (k + 2) < M)
     (hsum : absV + (n + 2 ^ (k + 2) - 1) / 2 ^ (k + 2) + 1 < M)
     (hgate : gate ≤ 1) (hviol : viol + 1 < M) :
@@ -175,7 +175,7 @@ private theorem ceil_mul_ge (q n : Nat) (hq : 0 < q) (hn : 1 ≤ n) :
   omega
 
 /-- (★): the passing test, cross-multiplied by `cel` and by `2 ^ (k+2)`. -/
-private theorem star_bound (k n cel absV E : Nat) (hcel : 1 ≤ cel)
+private theorem star_bound (k n cel absV E : Nat) (_hcel : 1 ≤ cel)
     (hnE : n ≤ 2 ^ (k + 2) * E) (htest : absV + E + 1 ≤ 2 ^ 61 / cel) :
     ((absV + 1) * 2 ^ (k + 2) + n) * cel ≤ 2 ^ (63 + k) := by
   have hP : (absV + 1) * 2 ^ (k + 2) + n ≤ (absV + E + 1) * 2 ^ (k + 2) := by
