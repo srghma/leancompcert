@@ -135,8 +135,8 @@ theorem psiRootPackBody_spec (m : PsiRuntimeMeta) (index : Nat) (s : AState)
       denoteOperand, denoteOp, AState.writeReg, RegState.set, hnRawM,
       hmarkRawM]
   have sr13 : sr.regs 13 = psiRootPackFlag m s index := by
-    simp [sr, psiRootPackRead, psiRootPackFlag, psiRootPackN, arun, astep,
-      sval, sdest, denoteOperand, denoteOp, AState.writeReg, RegState.set,
+    simp [sr, psiRootPackRead, psiRootPackFlag.eq_def, psiRootPackN.eq_def, arun, astep,
+      sval, sdest, denoteOperand, denoteOp.eq_def, AState.writeReg, RegState.set,
       hnRawM, hmarkRawM]
   have srWrite : sr.regs rWrite = s.regs rWrite := by
     simp [sr, psiRootPackRead, arun, astep, sval, sdest, denoteOperand,

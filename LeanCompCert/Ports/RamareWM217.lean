@@ -2804,7 +2804,7 @@ theorem wmBody_obs (c : Cfg) (hok : wmOK c = true) (k : Nat)
              then seedAt c (if sOf c k (s.regs rS) = 0 then 0
                             else pOf c k (s.regs rS)) else 0)) := by
     unfold lamOf
-    by_cases h : sOf c k (s.regs rS) = 0 <;> simp [h, nOf]
+    by_cases h : sOf c k (s.regs rS) = 0 <;> simp [h, nOf] <;> rfl
   rw [wmBody_arun]
   have hwN : RegState.set (srun k s.regs (wmPre c)) rT3
       (s.arr (srun k s.regs (wmPre c) rT2)) rN = k / c.B + c.n0 := by

@@ -28,7 +28,7 @@ private theorem table_frame (c : Cfg) (r : Nat)
     LeanCompCert.Verified.ArrayRegFrame.instrWrites, Cfg.tableBlock,
     Cfg.tableEntryBlock, LeanCompCert.Verified.InstrBlock.sdest, mvl, hr, hr']
   intro x hx
-  exact ⟨Ne.symm hr, Ne.symm hr'⟩
+  simp [Ne.symm hr, Ne.symm hr']
 
 private theorem bitFold_le (v : Nat) (indices : List Nat) (init : Nat) :
     indices.foldl (fun total k => total + (v >>> k) % 2) init ≤

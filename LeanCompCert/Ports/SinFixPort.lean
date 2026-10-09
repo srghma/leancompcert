@@ -123,7 +123,7 @@ theorem sinBodyG_raw (k : Nat) (s : RegState) (X : Nat)
         ≤ s 2 * X / B62 * X / B62 := Nat.div_le_self _ _
     omega
   rw [sinBodyG, srun_append, srun_append, srun_append]
-  simp only [srun_cons, srun_nil, sdest, sval, denoteOperand, denoteOp,
+  simp only [srun_cons, srun_nil, sdest, sval, denoteOperand, denoteOp.eq_def,
     RegState.set]
   rw [e3, e3b]
   simp only [Nat.ne_of_gt hcpos, ite_true, ite_false, Option.getD_some]

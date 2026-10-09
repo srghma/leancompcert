@@ -68,7 +68,7 @@ theorem absDiffG_spec (k : Nat) (s : RegState) (a b dst t0 t1 : Nat)
   have ha := hs a
   have hb := hs b
   simp only [absDiffG, srun_cons, srun_nil, sdest, sval, denoteOperand,
-    denoteOp, Option.getD_some, RegState.set]
+    denoteOp.eq_def, Option.getD_some, RegState.set]
   simp only [ite_eq_right ht01, ite_eq_right (Ne.symm ht01),
     ite_eq_right hdt0,
     ite_eq_right hdt1,
@@ -124,7 +124,7 @@ theorem maxG_spec (k : Nat) (s : RegState) (a b dst t0 t1 : Nat)
   have ha := hs a
   have hb := hs b
   simp only [maxG, srun_cons, srun_nil, sdest, sval, denoteOperand,
-    denoteOp, Option.getD_some, RegState.set]
+    denoteOp.eq_def, Option.getD_some, RegState.set]
   simp only [ite_eq_right ht01, ite_eq_right (Ne.symm ht01),
     ite_eq_right hdt0,
     ite_eq_right hdt1,
@@ -180,7 +180,7 @@ theorem minG_spec (k : Nat) (s : RegState) (a b dst t0 t1 : Nat)
   have ha := hs a
   have hb := hs b
   simp only [minG, srun_cons, srun_nil, sdest, sval, denoteOperand,
-    denoteOp, Option.getD_some, RegState.set]
+    denoteOp.eq_def, Option.getD_some, RegState.set]
   simp only [ite_eq_right ht01, ite_eq_right (Ne.symm ht01),
     ite_eq_right hdt0,
     ite_eq_right hdt1,
@@ -257,7 +257,7 @@ theorem tsubG_spec (k : Nat) (s : RegState) (a b dst t0 t1 : Nat)
   have ha := hs a
   have hb := hs b
   simp only [tsubG, srun_cons, srun_nil, sdest, sval, denoteOperand,
-    denoteOp, Option.getD_some, RegState.set]
+    denoteOp.eq_def, Option.getD_some, RegState.set]
   simp only [ite_eq_right ht01, ite_eq_right (Ne.symm ht01),
     ite_eq_right hdt0,
     ite_eq_right hdt1,
@@ -325,7 +325,7 @@ theorem le128G_spec (k : Nat) (s : RegState)
     srun k s (le128G lo1 hi1 lo2 hi2 dst t0 t1) dst
       = (if s lo1 + M * s hi1 ≤ s lo2 + M * s hi2 then 1 else 0) := by
   simp only [le128G, srun_cons, srun_nil, sdest, sval, denoteOperand,
-    denoteOp, Option.getD_some, RegState.set]
+    denoteOp.eq_def, Option.getD_some, RegState.set]
   simp only [ite_eq_right ht01, ite_eq_right (Ne.symm ht01),
     ite_eq_right hdt0, ite_eq_right hdt1,
     ite_eq_right (Ne.symm hdt0),

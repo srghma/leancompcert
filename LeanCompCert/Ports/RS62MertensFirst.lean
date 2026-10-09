@@ -1349,7 +1349,7 @@ theorem bodyC8a_spec (c : Cfg) (idx : Nat) (s : RegState)
   have h0M : (0:Nat) % M = 0 := by decide
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_,
     ?_⟩ <;>
-    simp only [bodyC8a, srun, sdest, sval, denoteOperand, denoteOp,
+    simp only [bodyC8a, srun, sdest, sval, denoteOperand, denoteOp.eq_def,
       RegState.set, Option.getD_some, reduceIte, reduceCtorEq,
       Nat.reduceEqDiff, ite_true, h752M, h060M, h055M, hancM, h1M, h0M,
       ite_mod, bit_mul_val,

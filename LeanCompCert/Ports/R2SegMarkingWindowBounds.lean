@@ -41,7 +41,7 @@ private theorem markWeightAdd_lt_two_lanes (d wt : Nat) (hd : d ≤ 3)
       _ = 2 ^ 56 := by simp [wtBits, ← Nat.pow_add]
   have hc : d = 0 ∨ d = 1 ∨ d = 2 ∨ d = 3 := by omega
   rcases hc with rfl | rfl | rfl | rfl <;>
-    simp [markWeightAdd, markBit, Nat.shiftLeft_eq] <;> omega
+    simp [markWeightAdd_eq, markBit, Nat.shiftLeft_eq] <;> omega
 
 /-- The encoded packed word of an invariant cell has enough room for one
 more base-prime weight update. -/

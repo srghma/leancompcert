@@ -321,7 +321,7 @@ theorem headAbsPre_run (idx : Nat) (r : RegState) (f : Nat)
       out 157 = (M - headX f) % M ∧ out rF = f := by
   have hF' : r 12 = f := by simpa [rF] using hF
   have hcut : 9223372036854775808 % M = 9223372036854775808 := by decide
-  simp [headAbsPreS, headX, srun, sdest, sval, denoteOperand, denoteOp,
+  simp [headAbsPreS, headX.eq_def, srun, sdest, sval, denoteOperand, denoteOp.eq_def,
     RegState.set, rF, hF', hcut]
 
 theorem headInc_run (idx : Nat) (r : RegState) (g e : Nat)

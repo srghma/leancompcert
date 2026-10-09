@@ -195,7 +195,7 @@ theorem productDivBody_run (k : Nat) (s : AState)
     out.regs rQ = s.regs rQ / s.regs 237 ∧
       out.arr = s.arr := by
   rw [productDivBody, arun_lift]
-  simp only [srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
+  simp only [srun, sdest, sval, denoteOperand, denoteOp.eq_def, RegState.set,
     Option.getD_some, rQ, M, Nat.reduceEqDiff, ite_true, ite_false]
   rw [ite_eq_right hden]
   exact ⟨Nat.mod_eq_of_lt (Nat.lt_of_le_of_lt (Nat.div_le_self _ _)

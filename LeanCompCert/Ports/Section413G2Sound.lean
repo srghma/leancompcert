@@ -227,23 +227,20 @@ def Capped (w : Nat) : Prop := (decodeZ w).natAbs ≤ CAP
 theorem capped_iff_guard_clean (w : Nat) (hw : w < M) :
     ((w + CAP) % M ≤ 2 * CAP) ↔ Capped w := by
   unfold Capped decodeZ
-  simp only [M_val, CAP_val, cellsH63_val, B64_val] at *
-  split <;> omega
+  split <;> simp only [M_val, CAP_val, cellsH63_val, B64_val] at * <;> omega
 
 /-- A capped word is in the two's-complement signed range, so it round
 trips through `decodeZ`/`encodeZ`. -/
 theorem capped_range {w : Nat} (hw : w < M) (h : Capped w) :
     -(CAP : Int) ≤ decodeZ w ∧ decodeZ w ≤ (CAP : Int) := by
   unfold Capped decodeZ at *
-  simp only [M_val, CAP_val, cellsH63_val, B64_val] at *
-  split at h <;> omega
+  split at h <;> simp only [M_val, CAP_val, cellsH63_val, B64_val] at * <;> omega
 
 theorem capped_of_range {w : Nat}
     (hlo : -(CAP : Int) ≤ decodeZ w) (hhi : decodeZ w ≤ (CAP : Int)) :
     Capped w := by
   unfold Capped decodeZ at *
-  simp only [M_val, CAP_val, cellsH63_val, B64_val] at *
-  split at * <;> omega
+  split at * <;> simp only [M_val, CAP_val, cellsH63_val, B64_val] at * <;> omega
 
 theorem encodeZ_decodeZ_self {w : Nat} (hw : w < M) : encodeZ (decodeZ w) = w :=
   encodeZ_decodeZ w (by rw [B64_val]; exact hw)
@@ -726,8 +723,8 @@ theorem tmag_sign (w : Nat) (hw : w < M) :
 
 theorem tmag_mag (w : Nat) (hw : w < M) : (tmag w).2 = (decodeZ w).natAbs := by
   show (if H63 ≤ w then tsub 0 w else w) = (decodeZ w).natAbs
-  rw [tsub_zero, natAbs_decodeZ w hw]
-  simp only [M_val, H63_val] at *
+  rw [tsub_zero, natAbs_decodeZ w hw, H63_val]
+  simp only [M_val] at *
   split <;> omega
 
 /-- `encodeZ` on a small nonnegative value is the identity. -/
@@ -1216,8 +1213,8 @@ theorem tcmul_eq_back (gate aLo aHi bLo bHi viol : Nat)
                (psign sa1 sb2 p2) p2.1 p2.2
                (psign sa2 sb1 p3) p3.1 p3.2
                (psign sa2 sb2 p4) p4.1 p4.2 := by
-  simp only [tcmul, tproduct, torderedLo, torderedHi, torder, troundLo,
-    troundHi, cmulBack, selMin, selMax, roundLo, roundHi, psign,
+  simp only [tcmul.eq_def, tproduct.eq_def, torderedLo.eq_def, torderedHi.eq_def, torder.eq_def, troundLo.eq_def,
+    troundHi.eq_def, cmulBack.eq_def, selMin.eq_def, selMax.eq_def, roundLo.eq_def, roundHi.eq_def, psign.eq_def,
     ha1, ha2, hb1, hb2, hq1, hq2, hq3, hq4]
 
 /-- **The back half computes the outward-rounded interval product** of the
@@ -2769,22 +2766,19 @@ all-zero cell table, and `μ(1) = +1` is a legal μ code. -/
 theorem Inv_tInit (c : Cfg) : Inv c tInit := by
   have hz : Capped 0 := by
     unfold Capped decodeZ
-    simp only [cellsH63_val, CAP_val]
-    split <;> omega
+    split <;> simp only [cellsH63_val, CAP_val] at * <;> omega
   refine ⟨by decide, ⟨hz, hz, hz, hz, hz, hz, hz, hz⟩, ?_, ?_, ?_⟩
   · intro d _
     show Capped (if d + c.plane1 = 1 then 1 else 0)
     split
     · unfold Capped decodeZ
-      simp only [cellsH63_val, CAP_val]
-      split <;> omega
+      split <;> simp only [cellsH63_val, CAP_val] at * <;> omega
     · exact hz
   · intro d _
     show Capped (if d + c.plane2 = 1 then 1 else 0)
     split
     · unfold Capped decodeZ
-      simp only [cellsH63_val, CAP_val]
-      split <;> omega
+      split <;> simp only [cellsH63_val, CAP_val] at * <;> omega
     · exact hz
   · intro d _
     show (if d = 1 then 1 else 0) = 0 ∨ (if d = 1 then 1 else 0) = 1 ∨

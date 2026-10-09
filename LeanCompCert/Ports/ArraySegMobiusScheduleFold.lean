@@ -273,7 +273,14 @@ theorem tracedScheduleRun_add (a b segLen w limit i : Nat)
       change tracedScheduleStep segLen w limit i table
           (tracedScheduleRun (a + b) segLen w limit i table st) = _
       rw [ih]
-      simp only [tracedScheduleRun, tracedScheduleStep, List.append_assoc]
+      change tracedScheduleStep segLen w limit i table _ =
+        { state := (tracedScheduleStep segLen w limit i table
+            (tracedScheduleRun b segLen w limit i table
+              (tracedScheduleRun a segLen w limit i table st).state)).state
+          events := _ ++ (tracedScheduleStep segLen w limit i table
+            (tracedScheduleRun b segLen w limit i table
+              (tracedScheduleRun a segLen w limit i table st).state)).events }
+      simp only [tracedScheduleStep.eq_def, List.append_assoc]
 
 /-- A complete nonterminal prime phase emits its exact live block and loads
 the next represented prime at its first translated multiple. -/

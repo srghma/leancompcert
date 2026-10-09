@@ -88,7 +88,7 @@ comparison `lo < v` — one fragment instruction, branchless — computes the
 carry-out bit. -/
 theorem carry_bit (u v : Nat) (hu : u < B64) (hv : v < B64) :
     (if (u + v) % B64 < v then 1 else 0) = (u + v) / B64 := by
-  simp only [B64, MulWide.B64] at hu hv ⊢
+  unfold B64 MulWide.B64 at hu hv ⊢
   split <;> omega
 
 /-- **The borrow is a comparison.**  Dually, `u < v` is the borrow-out of

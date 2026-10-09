@@ -347,7 +347,7 @@ theorem guardBody_run (r : EncodedRow) (k currentEdge cursor compare viol : Nat)
   rcases Nat.le_one_iff_eq_zero_or_eq_one.mp hCompareLe with rfl | rfl
   all_goals
   simp [guardBody, gate, arun, astep, AState.writeReg, sdest, sval,
-    denoteOperand, denoteOp, rowBit, bit, hEdge', hCursor', hCompare', hViol',
+    denoteOperand, denoteOp.eq_def, rowBit.eq_def, bit.eq_def, hEdge', hCursor', hCompare', hViol',
     Nat.mod_eq_of_lt hREdgeM, Nat.mod_eq_of_lt hDepthM,
     Nat.mod_eq_of_lt hIndexM, Nat.mod_eq_of_lt hn0,
     Nat.mod_eq_of_lt hn1, Nat.mod_eq_of_lt hn2,
@@ -359,8 +359,8 @@ theorem guardBody_run (r : EncodedRow) (k currentEdge cursor compare viol : Nat)
     Nat.mod_eq_of_lt hCompareM,
     Nat.mod_eq_of_lt hViolM,
     h4M, h17M, h178M, h182M, h196M, h198M, h131072M,
-    rCurrentEdge, rCursor, rViol, rOK, rFlag, rA, rB, rC, rD,
-    rBorrow, gridDepth, gridScale,
+    rCurrentEdge.eq_def, rCursor.eq_def, rViol.eq_def, rOK.eq_def, rFlag.eq_def, rA.eq_def, rB.eq_def, rC.eq_def, rD.eq_def,
+    rBorrow.eq_def, gridDepth.eq_def, gridScale.eq_def,
     and_assoc]
   try exact finish_flag _ viol hViolOnlyM hViolM
 

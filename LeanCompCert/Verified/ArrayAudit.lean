@@ -115,8 +115,8 @@ theorem auditInstr_defined (len bound idx : Nat) (s : AState)
                 simp [auditInstr, AllDefined, ADefined, astep,
                   LeanCompCert.Verified.InstrBlock.sdest,
                   LeanCompCert.Verified.InstrBlock.sval, denoteOperand,
-                  denoteOp, AState.writeReg, Operand.WF,
-                  auditReg, tmpReg, safeReg,
+                  denoteOp.eq_def, AState.writeReg, Operand.WF,
+                  auditReg.eq_def, tmpReg.eq_def, safeReg.eq_def,
                   Nat.add_mod] at hlhs hrhs hsafe ⊢ <;>
                 first
                 | rw [ite_eq_right (by omega)]; exact hsafe
@@ -127,8 +127,8 @@ theorem auditInstr_defined (len bound idx : Nat) (s : AState)
                 simp [auditInstr, AllDefined, ADefined, astep,
                   LeanCompCert.Verified.InstrBlock.sdest,
                   LeanCompCert.Verified.InstrBlock.sval, denoteOperand,
-                  denoteOp, AState.writeReg, Operand.WF,
-                  auditReg, tmpReg, safeReg,
+                  denoteOp.eq_def, AState.writeReg, Operand.WF,
+                  auditReg.eq_def, tmpReg.eq_def, safeReg.eq_def,
                   Nat.add_mod] at hlhs hrhs hsafe ⊢ <;>
                 first
                 | rw [ite_eq_right (by omega)]; exact hsafe
@@ -459,10 +459,11 @@ theorem auditInstr_audit (len bound idx : Nat) (s : AState)
       cases instr with
       | mov dest src =>
           rcases hi with ⟨hdest, hsrc⟩
+          have hba : bound ≠ dest := by omega
           simp [auditInstr, arun, astep,
             LeanCompCert.Verified.InstrBlock.sdest,
             AState.writeReg, guardFailed, auditReg,
-            Nat.mod_eq_of_lt (hword.1 bound)] <;> omega
+            Nat.mod_eq_of_lt (hword.1 bound), hba]
       | binop dest op lhs rhs =>
           rcases hi with ⟨hdest, hlhs, hrhs⟩
           have hba : bound ≠ dest := by omega

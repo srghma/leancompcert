@@ -173,8 +173,8 @@ theorem tdRound_full (P : Params) (k : Nat) (v : Vals) :
       , om := (tdOut P k v).om
       , sq := (tdOut P k v).sq
       , ok := if v.acc + ctOf P k v < M then v.ok else 0 } := by
-  simp only [tdRound, ctOf, tdOut, termOf, tdIn, tdbRound_m, tdbRound_phi,
-    tdbRound_om, tdbRound_sq, tdbFinal_fst, tdbFinal_snd, shiftBase]
+  simp only [tdRound.eq_def, ctOf.eq_def, tdOut.eq_def, termOf.eq_def, tdIn.eq_def, tdbRound_m, tdbRound_phi,
+    tdbRound_om, tdbRound_sq, tdbFinal_fst, tdbFinal_snd, shiftBase.eq_def]
 
 theorem tdIn_of_eq (P : Params) (k : Nat) (v : Vals) (h : k % P.div = 0) :
     tdIn P k v = { m := P.start + k / P.div, phi := 1, om := 0, sq := 1 } := by

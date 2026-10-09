@@ -101,7 +101,7 @@ private theorem carryInstrs_run (k : Nat) (s : RegState) (ml cl : Nat)
       4611686018427387904 := by decide
   simp [carryInstrs, logRoundBody, srun, RegState.set, sdest, sval,
     denoteOperand, denoteOp, h8, h10, h33, hB62,
-    Nat.mod_eq_of_lt hshift, Nat.mod_eq_of_lt hsum, B62]
+    Nat.mod_eq_of_lt hshift, Nat.mod_eq_of_lt hsum, B62.eq_def]
 
 private theorem combineInstrs_run (k : Nat) (s : RegState)
     (hi mh ch carry : Nat)

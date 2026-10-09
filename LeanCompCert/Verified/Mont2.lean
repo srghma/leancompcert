@@ -204,8 +204,10 @@ theorem hlW_eq (a b : Nat) (ha : a < M) (hb : b < M) :
   rw [wand_mask a, wand_mask b, wshr_eq a 32 ha, wshr_eq b 32 hb,
     wmul_half _ _ ha0 hb0, wmul_half _ _ ha0 hb1, wmul_half _ _ ha1 hb0,
     wmul_half _ _ ha1 hb1, wshr_eq _ 32 (wadd_lt _ _)]
-  simp only [MulWide.hl, MulWide.B32, MulWide.B64, wadd, wlt, wshl,
-    Nat.shiftLeft_eq, two_pow_32, M_val, Prod.mk.injEq, true_and] at hhi ⊢
+  unfold MulWide.hl MulWide.B32 MulWide.B64 at hhi
+  unfold MulWide.hl MulWide.B32 MulWide.B64 wadd wlt wshl
+  rw [M_val] at *
+  simp only [Nat.shiftLeft_eq, two_pow_32, Prod.mk.injEq, true_and] at hhi ⊢
   revert hhi
   split <;> split <;> omega
 
@@ -573,7 +575,7 @@ def dbl2 (n0 n1 x0 x1 : Nat) : Nat × Nat :=
   condSub2 n0 n1 d0 d1
 
 theorem dbl2_val (n0 n1 x0 x1 : Nat)
-    (hn0 : n0 < M) (hn1 : n1 < M) (hx0 : x0 < M) (_hx1 : x1 < M)
+    (hn0 : n0 < M) (hn1 : n1 < M) (hx0 : x0 < M) (hx1 : x1 < M)
     (hHalf : 2 * pval n0 n1 ≤ M * M)
     (hx : pval x0 x1 < pval n0 n1) :
     pval (dbl2 n0 n1 x0 x1).1 (dbl2 n0 n1 x0 x1).2 =

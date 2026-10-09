@@ -246,7 +246,7 @@ theorem allDefined_of_alwaysDef (len k : Nat) :
                             have := h.1
                             simp only [alwaysDef, decide_eq_true_eq] at this
                             exact this
-                          simp only [denoteOperand])
+                          simp only [denoteOperand, hv, ↓reduceIte])
       | load _ _ => exact absurd h.1 (by simp [alwaysDef])
       | store _ _ => exact absurd h.1 (by simp [alwaysDef])
 
@@ -3684,12 +3684,12 @@ theorem selS_spec (c : Cfg) (idx : Nat) (s : RegState)
         (if p then 1 else 0) * (if q then 1 else 0) := by
     split <;> split <;> decide
   simp only [selS, Cfg.selBody, scalarOf, List.map_cons, List.map_nil,
-    srun, sdest, sval, denoteOperand, denoteOp, RegState.set,
+    srun, sdest, sval, denoteOperand, denoteOp.eq_def, RegState.set,
     Option.getD_some, ite_true, ite_false, Nat.reduceEqDiff, hRmod, hPmod,
     hPhmod, hSm, hS1m, hS2m, hS3m, hRm1, Nat.mod_eq_of_lt hidx,
     hR0, hP0, hqR, hrR, hqP, hrP, h0, h1]
   by_cases hphase : idx < c.phase1 <;>
-    simp [Cfg.tsel, bnat, tsub, hphase, hbit, hbits, hsub1]
+    simp [Cfg.tsel.eq_def, bnat.eq_def, tsub.eq_def, hphase, hbit, hbits, hsub1]
   all_goals first | rfl | exact ⟨h1, rfl, rfl⟩
 
 theorem selS_frame (c : Cfg) (idx : Nat) (s : RegState) (j : Nat)
@@ -4277,8 +4277,8 @@ theorem touchLoadBody_run (c : Cfg) (k g dSlot : Nat) (st : AState)
     (hP2 : c.plane2 % M = c.plane2) :
     arun k st (c.touchLoadBody g dSlot) = touchLoadState c g dSlot st := by
   simp [Cfg.touchLoadBody, touchLoadState, Cfg.touchBase, Cfg.touchA1,
-    Cfg.touchA2, arun, astep, AState.writeReg, sdest, sval, denoteOperand,
-    denoteOp, hP1, hP2]
+    Cfg.touchA2, arun, astep, AState.writeReg.eq_def, sdest, sval, denoteOperand,
+    denoteOp.eq_def, hP1, hP2]
 
 /-- The only partial operations in the load prefix are its two array reads. -/
 theorem touchLoadBody_defined (c : Cfg) (k g dSlot : Nat) (st : AState)

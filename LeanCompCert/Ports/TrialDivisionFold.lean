@@ -1089,7 +1089,8 @@ theorem tdRun_spec (hP : P.Sane) (hk : k < P.fuel * P.div) (hs : TDInv P s) :
   · rw [tdRound_mk P k (valsOf s) rr n d m0 phi0 om0 sq0 m1 phi1 om1 sq1 phiF
       omF omC den tv ct err en ed em0 ephi0 eom0 esq0 em1 ephi1 eom1 esq1 ephiF
       eomF eomC eden etv ect]
-    simp only [valsOf, c0, c1, c2, c3, c4, c5]
+    by_cases hw : s 0 + ct < M <;>
+      simp only [valsOf, c0, c1, c2, c3, c4, c5, hw, ↓reduceIte]
   · exact
       { word := tdRun_lt P k s hs.word
         mPos := by rw [c1]; exact hm1pos

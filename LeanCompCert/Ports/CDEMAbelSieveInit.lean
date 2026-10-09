@@ -87,7 +87,7 @@ theorem cdem_seedRegs_arr (idx : Nat) (s : AState)
 theorem cdem_seedReg_reg (idx r : Nat) (s : AState) (x : Nat × Nat) :
     (arun idx s [.scalar (.mov x.1 (.lit x.2))]).regs r =
       if r = x.1 then x.2 % M else s.regs r := by
-  simp [arun, astep, AState.writeReg, InstrBlock.sdest, InstrBlock.sval,
+  simp [arun, astep, AState.writeReg, InstrBlock.sdest.eq_def, InstrBlock.sval,
     denoteOperand]
 
 theorem cdem_seedRegs_reg_zero (idx r : Nat) (s : AState)
@@ -138,8 +138,8 @@ theorem primeCell_mem (c : Cfg) (j : Nat) (hj : j < c.pn) :
     (j, c.primes[j]) ∈ c.primeCells := by
   apply List.mem_map.mpr
   refine ⟨(c.primes[j], j), ?_, ?_⟩
-  · exact List.mk_mem_zipIdx_iff_getElem?.mpr (by simp)
-  · simp [Cfg.primeBase]
+  · exact List.mk_mem_zipIdx_iff_getElem?.mpr (List.getElem?_eq_getElem hj)
+  · exact congrArg (fun a => (a, c.primes[j])) (Nat.zero_add j)
 
 theorem primeCells_value (c : Cfg) (j : Nat) (hj : j < c.pn)
     (x : Nat × Nat) (hx : x ∈ c.primeCells) (haddr : x.1 = j) :

@@ -324,8 +324,14 @@ theorem tracedPowerScheduleRun_add (a b segLen w hi limit i : Nat)
       change tracedPowerScheduleStep segLen w hi limit i table
           (tracedPowerScheduleRun (a + b) segLen w hi limit i table st) = _
       rw [ih]
-      simp only [tracedPowerScheduleRun, tracedPowerScheduleStep,
-        List.append_assoc]
+      change tracedPowerScheduleStep segLen w hi limit i table _ =
+        { state := (tracedPowerScheduleStep segLen w hi limit i table
+            (tracedPowerScheduleRun b segLen w hi limit i table
+              (tracedPowerScheduleRun a segLen w hi limit i table st).state)).state
+          events := _ ++ (tracedPowerScheduleStep segLen w hi limit i table
+            (tracedPowerScheduleRun b segLen w hi limit i table
+              (tracedPowerScheduleRun a segLen w hi limit i table st).state)).events }
+      simp only [tracedPowerScheduleStep.eq_def, List.append_assoc]
 
 /-- While a power cursor remains live, it emits its exact arithmetic
 progression and changes no other persistent cursor field. -/

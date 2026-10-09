@@ -30,7 +30,7 @@ theorem Cfg.classClearBody_run (k : Nat) (s : AState)
     (hzero : s.regs 0 = 0) :
     arun k s Cfg.classClearBody = clearClassCells s := by
   simp [Cfg.classClearBody, clearClassCells, arun, astep,
-    AState.writeArr, hzero]
+    AState.writeArr.eq_def, hzero]
 
 /-- Exactly the seven live plane addresses are the partiality obligations of
 the classifier clear stage. -/

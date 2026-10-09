@@ -56,7 +56,7 @@ def SignedWord.leB (x y : SignedWord) : Bool :=
   else if y.negative then false else decide (x.magnitude ≤ y.magnitude)
 
 theorem SignedWord.leB_eq_true_iff {x y : SignedWord}
-    (_hx : x.Canonical) (hy : y.Canonical) :
+    (hx : x.Canonical) (hy : y.Canonical) :
     x.leB y = true ↔ x.val ≤ y.val := by
   cases hxs : x.negative <;> cases hys : y.negative <;>
     simp [SignedWord.Canonical, SignedWord.leB, SignedWord.val, hxs, hys] at hx hy ⊢ <;>
